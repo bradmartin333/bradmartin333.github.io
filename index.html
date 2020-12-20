@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" href="favicon.ico?">
+<link rel="icon" href="favicon.ico">
 <style>
 table, th, td {
   border: 1px solid black;
@@ -12,12 +12,12 @@ form {
   display: flex;
   flex-direction: row;
   margin: 0 auto; 
-  width:300px;
+  width:265px;
 }
 .header {
   padding: 10px;
   text-align: center;
-  background: url('https://lh3.googleusercontent.com/pw/ACtC-3c0OgDZBZKY7IwOW6ej9r5p58cFBEnZ-r2efX7bURP6kYIOB0TrCeIeHvvGlfCA2y4j4YNplw8EbsqfTH61WDLmhqfxlhuXUzxvXpchciqsW1qtebQp1i2zKAeHgqCApo6uMBKDQDd2t6_NBseqVFsf=w1400-h938-no?authuser=0');
+  background: #1abc9c;
   color: black;
   font-size: 30px;
 }
@@ -27,10 +27,12 @@ form {
 <div class="header">
   <h1>Brad Martin</h1>
   <h4>818 322 5090<br />bradmartin333@gmail.com</h4>
-  <form> <action="https://www.hackster.io/bradmartin"><input type="submit" value="hackster.io" />
-  <action="https://www.linkedin.com/in/bradmartin333/"><input type="submit" value="LinkedIn" />
-  <action="https://github.com/bradmartin333"><input type="submit" value="GitHub" />
-  <action="https://photos.app.goo.gl/MLK2SPYmEyX293HWA"><input type="submit" value="Photos" /></form>
+  <form>
+  <input type="button" onclick="location.href='https://www.hackster.io/bradmartin';" value="hackster.io" />
+  <input type="button" onclick="location.href='https://www.linkedin.com/in/bradmartin333';" value="LinkedIn" />
+  <input type="button" onclick="location.href='https://github.com/bradmartin333';" value="GitHub" />
+  <input type="button" onclick="location.href='https://photos.app.goo.gl/MLK2SPYmEyX293HWA';" value="Photos" />
+  </form>
 </div>
 
 <body>
