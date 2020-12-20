@@ -9,7 +9,7 @@ and wires to link everything together is seen below.
 </p>
 
 <p>
-<img src="control.jpg?" alt="Control Unit" width=100%>
+<img src="control.jpg?" alt="Control Unit" width=50%>
 </p>
 
 <p>
@@ -25,7 +25,7 @@ and Phoenixpower distribution blocks.
 </p>
 
 <p>
-<img src="stage.jpg?" alt="Chuck Mounting" width=100%>
+<img src="stage.jpg?" alt="Chuck Mounting" width=50%>
 </p>
 
 <p>
@@ -36,46 +36,7 @@ units. The units share an array of four 16 bit integers
 that describe the status of their registers.
 Using a class for each vacuum zone, I could write all valve
 outputs on a user button press and read all sensors
-on a timer interval.<br>
-<code>
-	Private Sub AcromagTimerElapsed()
-        If Not AcromagEnable Then Exit Sub
-        Try
-            Dim ReadArray(4) As UShort
-            nStatus = InputAMTN.MbReadInputRegs(1, 0, 4, ReadArray) ' Read registers into array
-            For Each v As VacZone In vacs
-                ' Bitwise "And" between read array UShort and channel index will yield a 1 or 0
-                ' The last index of the ReadArray will be 0 as we only use 10 of the 16 channels
-                ' Can reverse logic with Acromag setup, or can put a "Not" here
-                v.Alarm = Not CBool(ReadArray(Math.Floor(v.Channel / 4)) And (2 ^ (v.Channel Mod 4)))
-            Next
-            Refresh()
-            If nStatus <> AMTN.AMTNControl.MB_STATUS.MB_NO_ERROR Then
-                DisableAcromagUI()
-            ElseIf Connected = False Then
-                Connected = True
-                lblStatus.Text = "Connected"
-            End If
-
-        Catch ex As Exception
-            DisableAcromagUI()
-        End Try
-    End Sub
-
-    Private Sub WriteAcromag()
-        If Not AcromagEnable Then Exit Sub
-        Try
-            Dim WriteArray(4) As UShort
-            For Each v As VacZone In vacs
-                ' Add 2 ^ channel index to the value of the WriteArray UShort of the group index
-                ' The last index of the WriteArray will be 0 as we only use 10 of the 16 channels
-                If v.State Then WriteArray(Math.Floor(v.Channel / 4)) += 2 ^ (v.Channel Mod 4)
-            Next
-            nStatus = OutputAMTN.MbPresetMultipleRegs(1, 0, 4, WriteArray)
-
-        Catch ex As Exception
-            DisableAcromagUI()
-        End Try
-    End Sub
-</code>
+on a timer interval.
 </p>
+
+<iframe src="https://pastebin.pl/view/embed/e9df73fe" style="border:none;width:100%"></iframe>
