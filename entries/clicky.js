@@ -9,9 +9,18 @@ window.onload = function() {
     var fpstime = 0;
     var framecount = 0;
     var fps = 0;
+	var needRefresh = true;
 	
 	// Player
     var player = {
+        x: 0,
+        y: 0,
+		radius: 50,
+        angle: 0
+	}
+	
+	// Player
+    var lastPlayer = {
         x: 0,
         y: 0,
 		radius: 50,
@@ -35,7 +44,6 @@ window.onload = function() {
 		
 		// Update and render the game
 		update(tframe);
-		render();
     }
     
     // Update the game state
@@ -96,6 +104,7 @@ window.onload = function() {
         var pos = getMousePos(canvas, e);
 		player.x = pos.x;
 		player.y = pos.y;
+		needRefresh = true;
     }
     
     // On mouse button click
@@ -103,6 +112,7 @@ window.onload = function() {
         // Get the mouse position
         var pos = getMousePos(canvas, e);
 		player.radius += 5;
+		needRefresh = true;
     }
     
     // Get the mouse position
