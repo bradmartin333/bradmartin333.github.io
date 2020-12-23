@@ -31,9 +31,14 @@ function main(tframe) {
 	context.fillStyle = "#000000";
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
-	context.fillStyle = circle.color;
+	context.fillStyle = "#ffffff";
 	context.beginPath();
 	context.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+	context.fill();
+	
+	context.fillStyle = circle.color;
+	context.beginPath();
+	context.arc(circle.x, circle.y, circle.radius - 2, 0, 2 * Math.PI);
 	context.fill();
 	
 	if (dropInterval != -1) {
