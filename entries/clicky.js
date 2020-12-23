@@ -9,22 +9,12 @@ window.onload = function() {
     var fpstime = 0;
     var framecount = 0;
     var fps = 0;
-	var needRefresh = true;
 	
 	// Player
     var player = {
         x: 0,
         y: 0,
-		radius: 50,
-        angle: 0
-	}
-	
-	// Player
-    var lastPlayer = {
-        x: 0,
-        y: 0,
-		radius: 50,
-        angle: 0
+		radius: 50
 	}
     
     // Initialize the game
