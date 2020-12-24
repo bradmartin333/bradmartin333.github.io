@@ -77,14 +77,19 @@ iframe {
 form {
   display: flex;
   flex-direction: column;
-  margin: 0 auto; 
-  width:375px;
+  width: 100%;
 }
 
 /* Make larger buttons */
 input {
   background-color: "#707070";
   font-size: 18px;
+}
+
+/* Make canvas fit viewport */
+canvas { 
+  width: 100%; 
+  display: block;
 }
 </style>
 </head>
@@ -100,9 +105,9 @@ input {
       <h2>JS Sandbox 1: Clicky</h2>
       <h5>Dec 23, 2020</h5>
 	  <p>Note: This will not work with adblockers or on mobile</p>
-	  <canvas id="clicky_viewport" width="628" height="628"></canvas>
+	  <canvas id="clicky_viewport"></canvas>
       <script async src="entries/clicky2.js"></script>
-      <p>Credit to Rembound for his JS tutorials. I'm just trying to learn more about the do's and dont's of HTML and JS. I didn't expect it to be so difficult to put multiple animations on the same page. In the future, I will have a button that takes you to a different page with the desired animation. Next steps for this clicky guy is to use OOP so you can add another circle before the previous circle disappears. After that, I'll try and introduce physics so they settle to the bottom instead of falling out of frame.</p>
+      <p>Credit to Rembound for his JS tutorials. I'm just trying to learn more about the do's and dont's of HTML and JS. I didn't expect it to be so difficult to put multiple animations on the same page. In the future, I will have a button that takes you to a different page with the desired animation. That will also resolve the grainyness issue with scaling the canvas to the column. Next steps for this clicky guy is to use OOP so you can add another circle before the previous circle disappears. After that, I'll try and introduce physics so they settle to the bottom instead of falling out of frame.</p>
     </div>
 	<div class="card">
       <h2>Acromag 10 Zone I/O</h2>
