@@ -4,8 +4,8 @@ var context = canvas.getContext("2d");
 var circle = {
 	x: 0,
 	y: 0,
-	radius: 0,
-	color: "#000000"
+	radius: 10,
+	color: "#ffffff"
 };
 
 var buffer = {
@@ -58,7 +58,6 @@ function onMouseMove(e) {
 
 function onMouseDown(e) {
 	if (growInterval == -1 && dropInterval == -1) {
-		circle.color = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
 		growInterval = setInterval(function(){circle.radius += 0.5;}, 20);
 	}
 }
@@ -81,10 +80,11 @@ function getMousePos(canvas, e) {
 
 function dropCircle() {
 	if (circle.y - circle.radius >= canvas.height) {
-		circle.radius = 0;
+		circle.radius = 10;
 		clearInterval(dropInterval);
 		dropInterval = -1;
 		velocity = 1;
+		circle.color = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
 	}
 	else {
 		circle.y += velocity * 2;
