@@ -1,65 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" href="favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-table, th, td {
-  border: 1px solid black;
-  text-align: center;
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
+
+/* Add a gray background color with some padding */
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: #f1f1f1;
+}
+
+/* Header/Blog Title */
+.header {
+  padding: 10px;
+  font-size: 50px;
+  text-align: center;
+  background: url("https://bradmartin333.github.io/images/sky.jpg");
+  background-size: 100% 100%;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {   
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+   background-color: white;
+   padding: 20px;
+   margin-top: 20px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+/* Put long posts where a paragraph should be */
+iframe {
+  width:100%;
+  height:500px;
+}
+
+/* Tile buttons in a form */
 form {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin: 0 auto; 
   width:375px;
 }
-iframe {
-  width:85%;
-  height:1000px;
-}
+
+/* Make larger buttons */
 input {
- font-size: 18px;
-}
-.header {
-  padding: 10px;
-  text-align: center;
-  background: url('https://lh3.googleusercontent.com/pw/ACtC-3c0lcvYzQMHfByf8BqMdIsHF4G_M9BPvepkq6zDugUVhpopHjRWMgyEeYCJKPFSomtuH-b5qisDIzBXSx8cbeFPHpt48IYOaHssR0oMLN2QoGqM-q9gJ7jOY-yo4A1X2AD8sKOsJwqzt2lR5Cpg_ual=w1250-h937-no?authuser=0');
-  background-size: 100% 100%;
-  color: black;
-  font-size: 30px;
+  background-color: "#707070";
+  font-size: 18px;
 }
 </style>
 </head>
-
-<div class="header">
-  <h1>Brad Martin</h1>
-  <h4>818 322 5090<br />bradmartin333@gmail.com</h4>
-  <form>
-  <input type="button" onclick="location.href='https://www.hackster.io/bradmartin';" value="hackster.io" />&ensp;
-  <input type="button" onclick="location.href='https://www.linkedin.com/in/bradmartin333';" value="LinkedIn" />&ensp;
-  <input type="button" onclick="location.href='https://github.com/bradmartin333';" value="GitHub" />&ensp;
-  <input type="button" onclick="location.href='https://photos.app.goo.gl/MLK2SPYmEyX293HWA';" value="Photos" />
-  </form>
-  <br>
-</div>
-
 <body>
 
-<h2>12/23/2020: Clicky</h2>
-<p>Note: This will be blocked by an AdBlocker and will not work on mobile</p>
-<textarea readonly rows="4" cols="225">
-Credit to Rembound for his JS tutorials. I'm just trying to learn more about the do's and dont's of HTML and JS. I didn't expect it to be so difficult to put multiple animations on the same page. In the future, I will have a button that takes you to a different page with the desired animation. Next steps for this clicky guy is to use OOP so you can add another circle before the previous circle disappears. After that, I'll try and introduce physics so they settle to the bottom instead of falling out of frame.
-</textarea>
-<br><br>
-<canvas id="clicky_viewport" width="628" height="628"></canvas>
-<script async src="entries/clicky2.js"></script>
+<div class="header">
+  <h2>Brad Martin</h2>
+</div>
 
-<h2>12/20/2020: Acromag 10 Zone I/O</h2>
-<iframe src="entries/tenZone/tenZone.html" seamless></iframe>
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <h2>JS Sandbox 1: Clicky</h2>
+      <h5>Dec 23, 2020</h5>
+	  <canvas id="clicky_viewport" width="628" height="628"></canvas>
+      <script async src="entries/clicky2.js"></script>
+      <p>Credit to Rembound for his JS tutorials. I'm just trying to learn more about the do's and dont's of HTML and JS. I didn't expect it to be so difficult to put multiple animations on the same page. In the future, I will have a button that takes you to a different page with the desired animation. Next steps for this clicky guy is to use OOP so you can add another circle before the previous circle disappears. After that, I'll try and introduce physics so they settle to the bottom instead of falling out of frame.</p>
+    </div>
+	<div class="card">
+      <h2>Acromag 10 Zone I/O</h2>
+      <h5>Dec 20, 2020</h5>
+      <iframe src="entries/tenZone/tenZone.html" seamless></iframe>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>About Me</h2>
+	  <p>818 322 5090</p>
+	  <p>bradmartin333@gmail.com</p>
+      <p>I am starting to document my projecs here to learn more about HTML and JS.</p>
+    </div>
+    <div class="card">
+      <h3>Links</h3>
+	  <form>
+		<input type="button" onclick="location.href='https://www.hackster.io/bradmartin';" value="hackster.io" id="A0" />&ensp;
+		<input type="button" onclick="location.href='https://www.linkedin.com/in/bradmartin333';" value="LinkedIn" id="A1" />&ensp;
+		<input type="button" onclick="location.href='https://github.com/bradmartin333';" value="GitHub" id="A2" />&ensp;
+		<input type="button" onclick="location.href='https://photos.app.goo.gl/MLK2SPYmEyX293HWA';" value="Photos" id="A3" />
+	  </form>
+    </div>
+  </div>
+</div>
 
-<footer>
-  <p>Last Updated: 9:04 PM 12/23/2020<br>
-</footer>
+<div class="footer">
+  <p>Last Updated: 9:55 AM 12/24/2020<br>
+</div>
+
+<script>
+	// Make text white or black to have best contrast against background
+	function textColor(hex) {
+		var r = parseInt(hex.slice(0, 2), 16);
+		var	g = parseInt(hex.slice(2, 4), 16);
+		var	b = parseInt(hex.slice(4, 6), 16);
+		return ((r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF');
+	}
+	// Give items with ID a random background
+	for (var i = 0; i < 4; i++) {
+		var color = (0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
+		var item = document.getElementById("A" + i);
+		item.style.background = "#" + color;
+		item.style.color = textColor(color);
+		if (item.style.background == "#707070") {
+			item.style.color = textColor('#FFFFFF');
+		}
+	}
+</script>
 
 </body>
+</html>
