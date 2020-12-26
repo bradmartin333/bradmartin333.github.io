@@ -1,97 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-* {
-  box-sizing: border-box;
-}
-
-/* Add a gray background color with some padding */
-body {
-  font-family: Arial;
-  padding: 20px;
-  background: #f1f1f1;
-}
-
-/* Header/Blog Title */
-.header {
-  padding: 10px;
-  font-size: 50px;
-  text-align: center;
-  background: url("https://bradmartin333.github.io/images/sky.JPG");
-  background-size: 100% 100%;
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {   
-  float: left;
-  width: 75%;
-}
-
-/* Right column */
-.rightcolumn {
-  float: left;
-  width: 25%;
-  padding-left: 20px;
-}
-
-/* Add a card effect for articles */
-.card {
-   background-color: white;
-   padding: 20px;
-   margin-top: 20px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Footer */
-.footer {
-  padding: 20px;
-  text-align: center;
-  background: #ddd;
-  margin-top: 20px;
-}
-
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 800px) {
-  .leftcolumn, .rightcolumn {   
-    width: 100%;
-    padding: 0;
-  }
-}
-
-/* Put long posts where a paragraph should be */
-iframe {
-  width:100%;
-  height:500px;
-}
-
-/* Tile buttons in a form */
-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-/* Make larger buttons */
-input {
-  background-color: "#707070";
-  font-size: 18px;
-}
-
-/* Make canvas fit viewport */
-canvas { 
-  width: 100%; 
-  display: block;
-}
-</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="stylesheet.css" rel="stylesheet">
+	<link href="entries/clicky/clicky.css" rel="stylesheet">
 </head>
 <body>
 
@@ -101,14 +13,24 @@ canvas {
 
 <div class="row">
   <div class="leftcolumn">
-    <div class="card">
-      <h2>JS Sandbox 1: Clicky</h2>
-      <h5>Dec 23, 2020</h5>
-	  <p>Note: This will not work with adblockers or on mobile</p>
-	  <canvas id="clicky_viewport"></canvas>
-      <script async src="entries/clicky2.js"></script>
-      <p>Credit to Rembound for his JS tutorials. I'm just trying to learn more about the do's and dont's of HTML and JS. I didn't expect it to be so difficult to put multiple animations on the same page. In the future, I will have a button that takes you to a different page with the desired animation. That will also resolve the grainyness issue with scaling the canvas to the column. Next steps for this clicky guy is to use OOP so you can add another circle before the previous circle disappears. After that, I'll try and introduce physics so they settle to the bottom instead of falling out of frame.</p>
-    </div>
+
+	<div class="card">
+	  <h2>JS Sandbox: Clicky</h2>
+	  <h5>Dec 25, 2020</h5>
+	  <div id="container1" class="container">
+	  <div id="item1"  class="item" style="transition-duration: 0.2s; --scale-value:1;">
+	  <script src="entries/clicky/clicky.js"></script>
+	  </div></div>
+	  <p>
+	  This was a huge learning experience.
+	  Thanks to Rembound and Kirupa for their tutorials.
+	  Overall, I find this frontend stuff pretty nasty...
+	  but, it is very useful and easy to deploy projects and ideas.
+	  So, I will stick with it and continue to find out how to make
+	  HTML CSS and JS play nicely together.
+	  </p>
+	</div>
+	
 	<div class="card">
       <h2>Acromag 10 Zone I/O</h2>
       <h5>Dec 20, 2020</h5>
@@ -121,7 +43,7 @@ canvas {
 	  <p>818 322 5090</p>
 	  <p>bradmartin333@gmail.com</p>
       <p>
-	  I am starting to document my projects here to learn more about HTML and JS.
+	  I am starting to document my projects here to learn more about web design.
 	  It is hard to find the line between my occupation and my hobbies, so I am always learning and having fun.
 	  </p>
     </div>
@@ -138,7 +60,7 @@ canvas {
 </div>
 
 <div class="footer">
-  <p>Last Updated: 9:55 AM 12/24/2020<br>
+  <p>Last Updated: 10:49 AM 12/26/2020<br>
 </div>
 
 <script>
@@ -152,11 +74,11 @@ canvas {
 	// Give items with ID a random background
 	for (var i = 0; i < 4; i++) {
 		var color = (0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
-		var item = document.getElementById("A" + i);
-		item.style.background = "#" + color;
-		item.style.color = textColor(color);
-		if (item.style.background == "#707070") {
-			item.style.color = textColor('#FFFFFF');
+		var itemForColor = document.getElementById("A" + i);
+		itemForColor.style.background = "#" + color;
+		itemForColor.style.color = textColor(color);
+		if (itemForColor.style.background == "#707070") {
+			itemForColor.style.color = textColor('#FFFFFF');
 		}
 	}
 </script>
