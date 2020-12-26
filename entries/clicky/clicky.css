@@ -8,8 +8,8 @@
 }
 .item {
   --scale-value: 1;
-  --transX-value: 0px;
-  --transY-value: 0px;
+  --transX-value: 50%;
+  --transY-value: 50%;
   width: 95px;
   height: 95px;
   position: absolute;
