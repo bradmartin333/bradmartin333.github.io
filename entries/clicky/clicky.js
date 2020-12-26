@@ -14,8 +14,8 @@ function onMouseMove(e) {
 	var rect = container.getBoundingClientRect();
 	var x = (e.clientX - rect.left)/(rect.right - rect.left)*rect.width;
 	var y = (e.clientY - rect.top)/(rect.bottom - rect.top)*rect.height;
-	var xAdj = x - 10;
-	var yAdj = y - 10;
+	var xAdj = x - 50;
+	var yAdj = y - 50;
 	
 	item.style.setProperty("--transX-value", xAdj.toString() + "px");
 	item.style.setProperty("--transY-value", yAdj.toString() + "px");
@@ -42,12 +42,12 @@ function pressingDown(e) {
 function notPressingDown(e) {
   var color = (0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
   item.style.setProperty("background-color", "#" + color);
-  item.style.setProperty("border", "2px solid #" + invertColor(color));
+  item.style.setProperty("border", "5px solid #" + invertColor(color));
   press = false;
 }
 
 function scaleItem() {
-  let size = 1 + timePressed / 5;
+  let size = 1 + timePressed / 25;
   item.style.transitionDuration = "0s";
   item.style.setProperty("--scale-value", size);
 }
