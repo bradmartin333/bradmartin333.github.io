@@ -30,7 +30,7 @@
 	  <a href="https://schellingb.github.io/LoveWebBuilder/">this insanely cool tool.</a>
 	  I refuse to get involved with Docker at this point in my life, so thank you Bernhard Schelling.
 	  <a href="https://www.one-tab.com/page/monw97dnTcuGuWHouP0NNQ">Here is a small list</a> 
-	  of very cool libraries that will make it much easier to get my vision out and usable.
+	  of very cool libraries that will make it much easier to take things to the next level.
 	  Distibuting to all platforms is very easy and having a small .exe in the end
 	  is always my goal. Here, all the game files are in a directory that is zipped into
 	  a .love (Just a renamed .zip) file. Run it through love.exe and you have the distributable .exe!
@@ -93,7 +93,15 @@
 </div>
 
 <div class="footer">
-  <p>Last Updated: 9:42 AM 1/1/2021<br>
+  <p id="dt"></p>
+  <script>
+	function getLastMod() {
+	  var txt = "Last Updated: "
+	  var x = new Date(document.lastModified).toDateString().replace(/^\s+|\s+$/g, '');
+	  document.getElementById("dt").innerHTML = txt.concat(x);
+	}
+	window.onload = getLastMod;
+  </script>
 </div>
 
 <script>
