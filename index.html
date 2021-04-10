@@ -12,13 +12,17 @@
     <h2>Brad Martin</h2> </div>
   <div class="row">
     <div class="leftcolumn">
+			<div class="card">
+        <h2>Bitmap Software AutoFocus</h2>
+        <h5>Apr 10, 2021</h5>
+        <p> I have been working on this concept of autofocusing based on the red channel of pixel colors within a Bitmap. The core method takes pixels from nodes on a grid, then looks at the % difference between that node's red value and its neighbors up to the next node. High % diff means a lot of edges are present and that is consistent with being more in focus. The next big development was sampling tiles of a grid within the image and only running the % difference method for tiles that contained high entropy. I use the entropy calc from MathNet Numerics all the time. It is very good at picking out regions of interest within a pixel array, and <a href="https://asp-eurasipjournals.springeropen.com/articles/10.1186/s13634-016-0368-5#Sec2">researchers agree</a>. The results were better than I expected! The next step was implementing this method on the tools at work. The camera Z stage steps around and frames are grabbed and scored, resulting in a best Z position for best focus. It works great and is a lot easier than forcing the user to set a region of interest on their own. The idea came from digital camera autofocus, as seen in the pictures here. I still have to take my improvements from the work repo (Adding parameters to customize the grid and scoring) and add them to the <a href="https://github.com/bradmartin333/RedFocus">RedFocus repo</a>.</p> <img src="images/RedFocus.PNG" alt="One of the RedFocus examples"> <img src="images/DSLRfocus.jpg" alt="DSLR AutoFocus Inspiration"> </div>
       <div class="card">
         <h2>C# Bilinear Interpolation</h2>
-        <h5>Mar 11, 2020</h5>
+        <h5>Mar 11, 2021</h5>
         <p> Finally figured out how to do this in C#. It is really just <a href="https://helloacm.com/cc-function-to-compute-the-bilinear-interpolation/">algebra</a>. I also pulled together some code and made a cool interactive PictureBox heatplot. </p> <img src="images/interpolatorCs.PNG" alt="Cs Interpolation"> </div>
       <div class="card">
         <h2>Python Time</h2>
-        <h5>Mar 8, 2020</h5>
+        <h5>Mar 8, 2021</h5>
         <p> When you need numpy, you need numpy.
           <br /> Same goes for Scipy.
           <br /> While you're at it... why not matplotlib?
@@ -44,33 +48,33 @@
       </div>
       <div class="card">
         <h2>A year of .NET</h2>
-        <h5>Mar 2, 2020</h5>
+        <h5>Mar 2, 2021</h5>
         <p> I think I actually write good code now. VB was a great way to grow from tiny, single file apps made in nano over SSH on a rPi into a real software developer. I have a huge folder of projects that show how crappy I was a year ago and how many tips and tricks I have learned since. I am now combining the useful ones into a software suite using C#, F# and VB and it is very satisfying. As for OpenTK and LÖVE... I am going to try and simplify things with the SVG NuGet package. If it isn't easy or necessary, the customer won't use it, and it is wasted time. I think a simple, detailed SVG will go a long way. Oh yeah, Entroptik (terrible name still) has an AutoTrain now... basically cheap ML - but I made it! I'll leave you with a simple script that helped me set up the GridWizard part of Entroptik (another new feature). I don't think this is "good" code, but it works. </p>
         <script src="https://gist.github.com/bradmartin333/9fba4fe35534e308c74abb7defb2c496.js"></script> <img src="images/GridImage.PNG" alt="Grid Image"> Black & White = Entropy of 1, great for testing! </div>
       <div class="card">
         <h2>Abandon OpenTK... Back to LÖVE</h2>
-        <h5>Feb 24, 2020</h5>
+        <h5>Feb 24, 2021</h5>
         <p> I got a demo up and running with C# and OpenTK. It was not very good and took up a lot of memory. LÖVE is much nicer and saves me a lot of time and computers seem to like it too! I downloaded VS Code so that I could use a Lua/Love2d extension and it is a wayyyyy better way to develop in than what I was doing before. Here is what I managed to get together after a <a href="https://github.com/kikito/love-tile-tutorial/wiki">Refresher Tutorial</a>. (The blocks dissapear upon mouse click - not a performance issue, haha) </p> <img src="images/obey.gif" alt="Obey LÖVE"> </div>
       <div class="card">
         <h2>Actually Understanding OpenTK</h2>
-        <h5>Feb 20, 2020</h5>
+        <h5>Feb 20, 2021</h5>
         <p> It is easy to copy a tutorial and feel satisfied. I had to follow at least 5 tutorials until I was able to do it on my own. Maybe I should have just read the book like they all did while making the tutorials. Oh well, I have moving rectangles! And I did it myself! I don't need a Z dimension for this project, so making rectangles saves precious RAM. </p> <img src="images/OpenTK_2.gif" alt="First Solo OpenTK"> </div>
       <div class="card">
         <h2>MapFlip</h2>
-        <h5>Feb 18, 2020</h5>
+        <h5>Feb 18, 2021</h5>
         <p> If you are savvy with Python Pandas or know what a for loop is, then rotating and flipping arrays is small potatoes. But, if your data never sees the world outside the cells of a Excel file, you might need a VBA extension... or the carnival-esque <a href="https://tinyurl.com/MapFlip">MapFlip</a>! </p> <img src="images/MapFlip.PNG" alt="MapFlip"> </div>
       <div class="card">
         <h2>Entroptik v2.0 and OpenGL</h2>
-        <h5>Feb 17, 2020</h5>
+        <h5>Feb 17, 2021</h5>
         <p> I completed Entroptik v2.0 and it works the same way, but teaching the feature locations has changed. I have also started using OpenTK for visualizations. Very cool! Big thanks to <a href="http://dreamstatecoding.blogspot.com/p/opengl4-with-opentk-tutorials.html">Dreamstate Coding</a> for the tutorials. </p> <img src="images/OpenTK_1.PNG" alt="Dreamstate Coding Part 8"> </p>
       </div>
       <div class="card">
         <h2>Entroptik</h2>
-        <h5>Jan 19, 2020</h5>
+        <h5>Jan 19, 2021</h5>
         <p> Finished up a redo of an old project. I am not too fond of the name, but it works as designed. Everything is availble in the GitHub repo. You take a folder of images and parse them into an output log that tells you if certain features were present or absent. It is designed of quality control type work with AOI type machines. The advantage here is that the program is "dumb" and this runs very fast and doesn't need any licenses because it uses literally only one call to MathNet.Numerics. Enjoy! </p> <img src="images/Entroptik.PNG" alt="Entroptik Example"> </div>
       <div class="card">
         <h2>New Desktop</h2>
-        <h5>Jan 4, 2020</h5>
+        <h5>Jan 4, 2021</h5>
         <p> Just set up a new desktop for work/home use. Best way to install Lua on Win10 is described <a href="http://lua-users.org/wiki/BuildingLuaInWindowsForNewbies">here.</a> Then, install the LuaScript plugin to Notepad++ and add a hotkey to run current script. Also, compiling with love2d is a lot easier than I thought if the Win10 version of love2d is installed.
           <script src="https://gist.github.com/bradmartin333/1c47055767f4cd0641e0db9feecb42ba.js"></script> Just have to swap file name if desired. Yes, I have also ventured into powershell scripting and autohotkey. In other words, I have not enabled WSL on this new computer and I am getting more done! </p>
       </div>
