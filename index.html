@@ -13,6 +13,13 @@
   <div class="row">
     <div class="leftcolumn">
       <div class="card">
+        <h2>Use it or lose it...</h2>
+        <h5>Apr 24, 2021</h5>
+        <p> I have a storage bin full of great stuff. If the bin overflows, stuff must be used or disposed of. I am starting up a new CNC project because I cannot part with my amazing junk. The microcontroller I pulled out is a Seeeduino Lite. This is a Arduino Leonardo type board that is great because it can toggle between 3v3 and 5v as well as handle MIDI / keyboard type I/O. This particular board has been through a lot and is still serving me well. The motor driver and 12V step down converters are from Amazon. I bought them around when I took apart my old 3D printer with the intention of re-using the Nema stepper motors. Now is the time! This particular stage was given to me by a coworker. I had to hacksaw off the housing and solder some pins on the leads of the motor and hall sensor - works great!
+          <br /> <br /> <iframe width="560" height="315" src="https://www.youtube.com/embed/k70X8sgYm3s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <br /> <br /> The next step is to make everything sturdy and robust and encased. I have an old G-Drive case for that. Then, maybe, I will rig up my DSLR and start doing some cool photography / machine vision experiments. 
+          <br /> <iframe src="https://pastebin.com/embed_iframe/D9r7Zjpu?theme=dark" style="border:none;width:100%"></iframe> </div>
+      <div class="card">
         <h2>Additional layer of smart-sampling for AutoFocus</h2>
         <h5>Apr 12, 2021</h5>
         <p> First, I added all the parameter & tuning improvements that I made in the work repo, then I tested different number of histogram bins to sample, and decided that it should be based of a % of data used. So, I added a histogram parser that will count up bins until the grid has enough data. This number is typically 2 bins, but the cases of 1 bin save a lot of time and the cases of 3+ bins provide increased performance.</p> <img src="images/BinComparison.png" alt="Comparing NumBins Used"> </div>
