@@ -1,162 +1,37 @@
 <!DOCTYPE html>
 <html>
+<title>Brad Martin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body class="w3-content" style="max-width:1300px">
 
-<head>
-  <title>Brad Martin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="stylesheet.css" rel="stylesheet">
-  <link href="entries/clicky/clicky.css" rel="stylesheet"> </head>
-
-<body>
-  <div class="header">
-    <h2>Brad Martin</h2> </div>
-  <div class="row">
-    <div class="leftcolumn">
-      <div class="card">
-        <h2>Use it or lose it...</h2>
-        <h5>Apr 24, 2021</h5>
-        <p> I have a storage bin full of great stuff. If the bin overflows, stuff must be used or disposed of. I am starting up a new CNC project because I cannot part with my amazing junk. The microcontroller I pulled out is a Seeeduino Lite. This is a Arduino Leonardo type board that is great because it can toggle between 3v3 and 5v as well as handle MIDI / keyboard type I/O. This particular board has been through a lot and is still serving me well. The motor driver and 12V step down converters are from Amazon. I bought them around when I took apart my old 3D printer with the intention of re-using the Nema stepper motors. Now is the time! This particular stage was given to me by a coworker. I had to hacksaw off the housing and solder some pins on the leads of the motor and hall sensor - works great! </p>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/k70X8sgYm3s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <p> The next step is to make everything sturdy and robust and encased. I have an old G-Drive case for that. Then, maybe, I will rig up my DSLR and start doing some cool photography / machine vision experiments. </p>
-        <iframe src="https://pastebin.com/embed_iframe/D9r7Zjpu?theme=dark" style="border:none;width:100%"></iframe> </div>
-      <div class="card">
-        <h2>Additional layer of smart-sampling for AutoFocus</h2>
-        <h5>Apr 12, 2021</h5>
-        <p> First, I added all the parameter & tuning improvements that I made in the work repo, then I tested different number of histogram bins to sample, and decided that it should be based of a % of data used. So, I added a histogram parser that will count up bins until the grid has enough data. This number is typically 2 bins, but the cases of 1 bin save a lot of time and the cases of 3+ bins provide increased performance.</p> <img src="images/BinComparison.png" alt="Comparing NumBins Used"> </div>
-			<div class="card">
-        <h2>Bitmap Software AutoFocus</h2>
-        <h5>Apr 10, 2021</h5>
-        <p> I have been working on this concept of autofocusing based on the red channel of pixel colors within a Bitmap. The core method takes pixels from nodes on a grid, then looks at the % difference between that node's red value and its neighbors up to the next node. High % diff means a lot of edges are present and that is consistent with being more in focus. The next big development was sampling tiles of a grid within the image and only running the % difference method for tiles that contained high entropy. I use the entropy calc from MathNet Numerics all the time. It is very good at picking out regions of interest within a pixel array, and <a href="https://asp-eurasipjournals.springeropen.com/articles/10.1186/s13634-016-0368-5#Sec2">researchers agree</a>. The results were better than I expected! The next step was implementing this method on the tools at work. The camera Z stage steps around and frames are grabbed and scored, resulting in a best Z position for best focus. It works great and is a lot easier than forcing the user to set a region of interest on their own. The idea came from digital camera autofocus, as seen in the pictures here. I still have to take my improvements from the work repo (Adding parameters to customize the grid and scoring) and add them to the <a href="https://github.com/bradmartin333/RedFocus">RedFocus repo</a>.</p> <img src="images/RedFocus.PNG" alt="One of the RedFocus examples"> <img src="images/DSLRfocus.jpg" alt="DSLR AutoFocus Inspiration"> </div>
-      <div class="card">
-        <h2>C# Bilinear Interpolation</h2>
-        <h5>Mar 11, 2021</h5>
-        <p> Finally figured out how to do this in C#. It is really just <a href="https://helloacm.com/cc-function-to-compute-the-bilinear-interpolation/">algebra</a>. I also pulled together some code and made a cool interactive PictureBox heatplot. </p> <img src="images/interpolatorCs.PNG" alt="Cs Interpolation"> </div>
-      <div class="card">
-        <h2>Python Time</h2>
-        <h5>Mar 8, 2021</h5>
-        <p> When you need numpy, you need numpy.
-          <br /> Same goes for Scipy.
-          <br /> While you're at it... why not matplotlib?
-          <br /> I've made similar scripts in .NET for creating 2D interpolation tables and python just makes it <a href="https://github.com/bradmartin333/2DCalibrationInterpolation">so much easier</a>. I needed to create a 5mm x 5mm table spanning 800mm x 500mm from a small handful of points. This image shows some randomly generated test data. There are 3 modes in griddata, and 'linear' was the obvious choice. 'Cubic' sometimes creates negative values from an all positive dataset and 'nearest' is far to coarse. </p> <img src="images/calibration.png" alt="2DCal"> </div>
-      <div class="card">
-        <h2>Walkin up or down</h2>
-        <h5>Sometime in 2003 or 2004</h5>
-        <p> I was a walkin
-          <br /> I was a talkin
-          <br /> I was a fallin into a hole
-          <br /> There was a mole
-          <br /> That looked like coal
-          <br /> No it was just a mole
-          <br /> But it was as black as coal
-          <br /> Oh so I was still a fallin
-          <br /> Callin for help
-          <br /> And Michael Phelps came to save me
-          <br /> Wheeee he swam down to get me
-          <br /> And he a saved me
-          <br /> And the judges gave him a
-          <br /> &ensp; shiny gold medal while he was
-          <br /> &ensp; a talkin. I was a tryin to rhyme. </p>
-      </div>
-      <div class="card">
-        <h2>A year of .NET</h2>
-        <h5>Mar 2, 2021</h5>
-        <p> I think I actually write good code now. VB was a great way to grow from tiny, single file apps made in nano over SSH on a rPi into a real software developer. I have a huge folder of projects that show how crappy I was a year ago and how many tips and tricks I have learned since. I am now combining the useful ones into a software suite using C#, F# and VB and it is very satisfying. As for OpenTK and LÖVE... I am going to try and simplify things with the SVG NuGet package. If it isn't easy or necessary, the customer won't use it, and it is wasted time. I think a simple, detailed SVG will go a long way. Oh yeah, Entroptik (terrible name still) has an AutoTrain now... basically cheap ML - but I made it! I'll leave you with a simple script that helped me set up the GridWizard part of Entroptik (another new feature). I don't think this is "good" code, but it works. </p>
-        <script src="https://gist.github.com/bradmartin333/9fba4fe35534e308c74abb7defb2c496.js"></script> <img src="images/GridImage.PNG" alt="Grid Image"> Black & White = Entropy of 1, great for testing! </div>
-      <div class="card">
-        <h2>Abandon OpenTK... Back to LÖVE</h2>
-        <h5>Feb 24, 2021</h5>
-        <p> I got a demo up and running with C# and OpenTK. It was not very good and took up a lot of memory. LÖVE is much nicer and saves me a lot of time and computers seem to like it too! I downloaded VS Code so that I could use a Lua/Love2d extension and it is a wayyyyy better way to develop in than what I was doing before. Here is what I managed to get together after a <a href="https://github.com/kikito/love-tile-tutorial/wiki">Refresher Tutorial</a>. (The blocks dissapear upon mouse click - not a performance issue, haha) </p> <img src="images/obey.gif" alt="Obey LÖVE"> </div>
-      <div class="card">
-        <h2>Actually Understanding OpenTK</h2>
-        <h5>Feb 20, 2021</h5>
-        <p> It is easy to copy a tutorial and feel satisfied. I had to follow at least 5 tutorials until I was able to do it on my own. Maybe I should have just read the book like they all did while making the tutorials. Oh well, I have moving rectangles! And I did it myself! I don't need a Z dimension for this project, so making rectangles saves precious RAM. </p> <img src="images/OpenTK_2.gif" alt="First Solo OpenTK"> </div>
-     <div class="card">
-        <h2>Entroptik v2.0 and OpenGL</h2>
-        <h5>Feb 17, 2021</h5>
-        <p> I completed Entroptik v2.0 and it works the same way, but teaching the feature locations has changed. I have also started using OpenTK for visualizations. Very cool! Big thanks to <a href="http://dreamstatecoding.blogspot.com/p/opengl4-with-opentk-tutorials.html">Dreamstate Coding</a> for the tutorials. </p> <img src="images/OpenTK_1.PNG" alt="Dreamstate Coding Part 8"> </p>
-      </div>
-      <div class="card">
-        <h2>Entroptik</h2>
-        <h5>Jan 19, 2021</h5>
-        <p> Finished up a redo of an old project. I am not too fond of the name, but it works as designed. Everything is availble in the GitHub repo. You take a folder of images and parse them into an output log that tells you if certain features were present or absent. It is designed of quality control type work with AOI type machines. The advantage here is that the program is "dumb" and this runs very fast and doesn't need any licenses because it uses literally only one call to MathNet.Numerics. Enjoy! </p> <img src="images/Entroptik.PNG" alt="Entroptik Example"> </div>
-      <div class="card">
-        <h2>New Desktop</h2>
-        <h5>Jan 4, 2021</h5>
-        <p> Just set up a new desktop for work/home use. Best way to install Lua on Win10 is described <a href="http://lua-users.org/wiki/BuildingLuaInWindowsForNewbies">here.</a> Then, install the LuaScript plugin to Notepad++ and add a hotkey to run current script. Also, compiling with love2d is a lot easier than I thought if the Win10 version of love2d is installed.
-          <script src="https://gist.github.com/bradmartin333/1c47055767f4cd0641e0db9feecb42ba.js"></script> Just have to swap file name if desired. Yes, I have also ventured into powershell scripting and autohotkey. In other words, I have not enabled WSL on this new computer and I am getting more done! </p>
-      </div>
-      <div class="card">
-        <h2>LÖVE Clicky</h2>
-        <h5>Dec 31, 2020</h5>
-        <p> I have ventured into the space of Lua and LÖVE. It is an amazing resource for creating 2D games. I think it will be useful for work and personal projects. To start, I recreated my JS Clicky. It is a lot more intuitive and the community is marvelous. <a href="https://github.com/love2d-community/awesome-love2d">This page</a> shows some of the phenomenal work done and you can package everything into HTML and/or JS with <a href="https://schellingb.github.io/LoveWebBuilder/">this insanely cool tool.</a> I refuse to get involved with Docker at this point in my life, so thank you Bernhard Schelling. <a href="https://www.one-tab.com/page/monw97dnTcuGuWHouP0NNQ">Here is a small list</a> of very cool libraries that will make it much easier to take things to the next level. Distibuting to all platforms is very easy and having a small .exe in the end is always my goal. Here, all the game files are in a directory that is zipped into a .love (Just a renamed .zip) file. Run it through love.exe and you have the distributable .exe!
-          <script src="https://gist.github.com/bradmartin333/6cf87b05c16ad133eefb399a56bd4feb.js"></script> Someone made a C# solution of the same name that does this upon file change... so I might switch to that method. I always try to use the best language for the job at hand, and this is without a doubt the best way to make lightweight 2D GUI that relies on mouse input events. Now, what is this about Moonscript?? </p>
-        <form action="entries/clicky2.html">
-          <input type="submit" value="See Clicky made with LÖVE" /> </form>
-      </div>
-      <div class="card">
-        <h2>Javascript Clicky</h2>
-        <h5>Dec 25, 2020</h5>
-        <p>Won't work with AdBlocker enabled</p>
-        <div id="container1" class="container">
-          <div id="item1" class="item" style="transition-duration: 0.2s; --scale-value:1;">
-            <script src="entries/clicky/clicky.js"></script>
-          </div>
-        </div>
-        <p> This was a huge learning experience. Thanks to Rembound and Kirupa for their tutorials. Overall, I find this frontend stuff pretty nasty... but, it is very useful and easy to deploy projects and ideas. So, I will stick with it and continue to find out how to make HTML CSS and JS play nicely together. </p>
-      </div>
+<div class="w3-row">
+  <div class="w3-half w3-black w3-container w3-center" style="height:700px">
+    <div class="w3-padding-64">
+      <h1>Links</h1>
     </div>
-    <div class="rightcolumn">
-      <div class="card">
-        <h2>About Me</h2>
-        <p>818 322 5090</p>
-        <p>Gmail:
-          <br>bradmartin333</p>
-        <p> Documenting my projects here to learn more about web design. </p>
-      </div>
-      <div class="card">
-        <h3>Links</h3>
-        <form>
-          <input type="button" onclick="location.href='https://www.hackster.io/bradmartin';" value="hackster.io" id="A0" />&ensp;
-          <input type="button" onclick="location.href='https://www.linkedin.com/in/bradmartin333';" value="LinkedIn" id="A1" />&ensp;
-          <input type="button" onclick="location.href='https://github.com/bradmartin333';" value="GitHub" id="A2" />&ensp;
-          <input type="button" onclick="location.href='https://photos.app.goo.gl/MLK2SPYmEyX293HWA';" value="Photos" id="A3" /> </form>
+    <div class="w3-padding-64">
+      <a href="https://www.hackster.io/bradmartin" class="w3-button w3-black w3-block w3-hover-blue-grey w3-padding-16">hackster.io</a>
+      <a href="https://www.linkedin.com/in/bradmartin333" class="w3-button w3-black w3-block w3-hover-teal w3-padding-16">LinkedIn</a>
+      <a href="https://github.com/bradmartin333" class="w3-button w3-black w3-block w3-hover-dark-grey w3-padding-16">GitHub</a>
+      <a href="https://photos.app.goo.gl/MLK2SPYmEyX293HWA" class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">Photos</a>
+    </div>
+  </div>
+  <div class="w3-half w3-green w3-container" style="height:700px">
+    <div class="w3-padding-64 w3-center">
+      <h1>About Me</h1>
+			<a href="clicky.html">
+         <img class="w3-margin w3-squre" style="width:25%" alt="Logo" src="images/logo.png">
+      </a>
+      <div class="w3-left-align w3-padding-large">
+        <p>Hi, me llamo Brad Martin and I love to create, play with my dogs, rock climb, organize, cook, take pictures and ride my bike.</p>
+				<p>My favorite things include mediterranean food, M*A*S*H, Cage the Elephant, Around the World in 80 Days (1956) and my Toyota Tacoma.</p>
+				<p>You can reach me at +1.818.322.5090 or bradmartin333@gmail.com</p>
       </div>
     </div>
   </div>
-  <div class="footer">
-    <p id="dt"></p>
-    <script>
-      function getLastMod()
-      {
-        var txt = "Last Updated: "
-        var x = new Date(document.lastModified).toDateString().replace(/^\s+|\s+$/g, '');
-        document.getElementById("dt").innerHTML = txt.concat(x);
-      }
-      window.onload = getLastMod;
-    </script>
-  </div>
-  <script>
-    // Make text white or black to have best contrast against background
-    function textColor(hex)
-    {
-      var r = parseInt(hex.slice(0, 2), 16);
-      var g = parseInt(hex.slice(2, 4), 16);
-      var b = parseInt(hex.slice(4, 6), 16);
-      return ((r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF');
-    }
-    // Give items with ID a random background
-    for (var i = 0; i < 4; i++)
-    {
-      var color = (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
-      var itemForColor = document.getElementById("A" + i);
-      itemForColor.style.background = "#" + color;
-      itemForColor.style.color = textColor(color);
-      if (itemForColor.style.background == "#707070")
-      {
-        itemForColor.style.color = textColor('#FFFFFF');
-      }
-    }
-  </script>
+</div>
+
 </body>
-
 </html>
