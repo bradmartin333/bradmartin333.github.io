@@ -10,26 +10,38 @@
 
 		gtag('config', 'UA-97200518-1');
 	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<title>Entroptik</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
-<body class="w3-content" style="max-width:1300px">
-<div class="w3-row">
-  <div class="w3-full w3-white w3-container w3-center" style="height:350px">
-    <div class="w3-padding-64 w3-center">
-      <a href="https://github.com/bradmartin333/Entroptik/raw/main/Setup/EntroptikSetup.exe" download>
-        <img src="Entroptik.png" alt="XferSuite" width="200" height="200">
-      </a>
-			</br></br>
-			<a href="https://github.com/bradmartin333/Entroptik/issues" download>
-        <img src="Help.png" alt="XferSuite" width="100" height="100">
-      </a>
-    </div>
-  </div>
-</div>
-<video style="display:block; margin: 0 auto;" width="640" height="480" controls>
-	<source src="https://github.com/bradmartin333/Entroptik/blob/main/Examples/Entroptik_v4-1_Demo.mp4?raw=true" type="video/mp4">
-</video>
+<body class="w3-content" style="max-width:1300px" onload="gitVersion()">
+	<h1 style="font-family:tahoma;font-size:50px" align="center">Entroptik <span id="result"></span></h1>
+	<div class="w3-row">
+		<div class="w3-full w3-white w3-container w3-center" style="height:350px">
+			<div class="w3-padding-64 w3-center">
+				<a href="https://github.com/bradmartin333/Entroptik/raw/main/Setup/EntroptikSetup.exe" download>
+					<img src="Entroptik.png" alt="XferSuite" width="200" height="200">
+				</a>
+				</br></br>
+				<a href="https://github.com/bradmartin333/Entroptik/issues" download>
+					<img src="Help.png" alt="XferSuite" width="100" height="100">
+				</a>
+			</div>
+		</div>
+	</div>
+	<video style="display:block; margin: 0 auto;" width="640" height="480" controls>
+		<source src="https://github.com/bradmartin333/Entroptik/blob/main/Examples/Entroptik_v4-1_Demo.mp4?raw=true" type="video/mp4">
+	</video>
+	<script>
+			function gitVersion() {
+				const url = 'https://api.github.com/repos/bradmartin333/Entroptik/tags';
+				$.get(url).done(data => {
+					const versions = data.sort();
+					document.getElementById("result").innerHTML = versions[0].name.toString();
+				});
+			}
+		</script>
+</body>
 </html>
