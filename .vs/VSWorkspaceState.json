@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\sandbox",
     "\\utility"
   ],
-  "SelectedNode": "\\.gitignore",
+  "SelectedNode": "\\sandbox\\WebApps",
   "PreviewInSolutionExplorer": false
 }
