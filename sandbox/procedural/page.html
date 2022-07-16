@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <script src="grid.js"></script>
+        <script>
+          const grid = new Grid(500, 500);
+          grid.noise();
+          grid.blur(8); // Change this and see what happens
+          grid.normalize();
+          grid.draw(document.getElementById("canvas"));
+      </script>
+    </body>
+</html>
