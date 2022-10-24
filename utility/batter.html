@@ -12,23 +12,57 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
-		</style>
+
+		* {
+		box-sizing: border-box;
+		}
+
+		.column {
+			float: left;
+			width: 50%;
+			padding: 20px;
+		}
+
+		/* Clearfix (clear floats) */
+		.row::after {
+			content: "";
+			clear: both;
+			display: table;
+		}
+
+		p {
+			margin: 0;
+			padding: 0;
+		}
+	</style>
 </head>
 <body class="w3-content" style="max-width:1300px" onload="gitVersion()">
 	<h1 style="font-family:tahoma;font-size:50px" align="center">batter <span id="result"></span></h1>
 	<div class="w3-row">
 		<div class="w3-full w3-white w3-container w3-center" style="height:700px">
 			<div class="w3-padding-8 w3-center">
-				<a href="https://github.com/bradmartin333/batter/raw/main/Setup/Windows/batterSetup.exe" download>
-					<img src="batterExe.png" alt="batter" width="256" height="256">
-				</a>
+				<img src="https://raw.githubusercontent.com/bradmartin333/batter/main/Icon/batter.png" alt="batter" width="256" height="256">
+				</br></br>
+				<p style="font-family:tahoma;font-size:20px">Click an OS icon to download the x64 7zip package</p>
+				<div class="row">
+					<div class="column">
+					  <a href="https://github.com/bradmartin333/batter/raw/main/Build/batter-win.7z" download>
+						<img src="windows.svg" alt="Windows 10" style="width:20%" align="right">
+						</a>
+					</div>
+					<div class="column">
+					  <a href="https://github.com/bradmartin333/batter/raw/main/Build/batter-linux.7z" download>
+						<img src="ubuntu.svg" alt="Windows 10" style="width:20%" align="left">
+						</a>
+					</div>
+				  </div>
 				</br></br>
 				<a href="https://github.com/bradmartin333/batter/wiki" download>
-					<img src="Help.png" alt="batter" width="125" height="125">
+					<img src="Help.png" alt="batter" width="75" height="75">
 				</a>
-				<p style="font-family:tahoma;font-size:20px">Documentation & Requests</p>
-				<p><a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">requires .NET 6.0 Runtime</a>
-				</br>(Look for ".NET Runtime 6.X.XX" specifically)</p>
+				</br>
+				<p style="font-family:tahoma;font-size:20px"><a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">requires .NET 6.0 Runtime</a></p>
+				<p style="font-family:tahoma;font-size:15px">(Look for ".NET Runtime 6.X.XX" specifically)</p>
 			</div>
 		</div>
 		<script>
