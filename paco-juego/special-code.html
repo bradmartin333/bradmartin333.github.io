@@ -14,13 +14,13 @@
     Código Especial
 </header>
 
-<div style="text-align: center;">
-    <input type="text" size="1" maxlength="1" style="text-align: center;">
-    <input type="text" size="1" maxlength="1" style="text-align: center;">
-    <input type="text" size="1" maxlength="1" style="text-align: center;">
-    <input type="text" size="1" maxlength="1" style="text-align: center;">
-    <input type="text" size="1" maxlength="1" style="text-align: center;">
-</div>
+<form name="codeEntry" style="text-align: center;">
+    <input type="text" name="first" size="1" maxlength="1" style="text-align: center;" oninput="autoTab(this, document.codeEntry.second)">
+    <input type="text" name="second" size="1" maxlength="1" style="text-align: center;" oninput="autoTab(this, document.codeEntry.third)">
+    <input type="text" name="third" size="1" maxlength="1" style="text-align: center;" oninput="autoTab(this, document.codeEntry.fourth)">
+    <input type="text" name="fourth" size="1" maxlength="1" style="text-align: center;" oninput="autoTab(this, document.codeEntry.fifth)">
+    <input type="text" name="fifth" size="1" maxlength="1" style="text-align: center;" oninput="checkCode()">
+</form>
 
 <div style="text-align: center; margin-top: 20px;">
     <input type="submit" onclick="checkCode()" value="Enviar">

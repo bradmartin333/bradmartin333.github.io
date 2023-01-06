@@ -9,12 +9,19 @@ function checkCode() {
     let code = '';
     for (let i in inp) {
         if (inp[i].type == 'text') {
-            code += inp[i].value;
+            code += inp[i].value.toUpperCase();
         }
     }
     if (code == "") {
-        window.location.href = 'index.html';
+        window.history.back()
     } else {
         window.location.href = ['pages/', String(code), '.html'].join('');
+    }
+}
+
+function autoTab(current,to)
+{
+    if (current.getAttribute && current.value.length==current.getAttribute("maxlength")) {
+        to.focus() 
     }
 }
