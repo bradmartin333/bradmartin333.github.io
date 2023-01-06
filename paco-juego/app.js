@@ -15,6 +15,6 @@ function checkCode() {
     if (code == "") {
         window.location.href = 'index.html';
     } else {
-        window.location.href = ['/pages/', String(code), '.html'].join('');
+        window.location.href = ['pages/', String(code), '.html'].join('');
     }
 }
