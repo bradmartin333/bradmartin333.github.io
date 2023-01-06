@@ -1,4 +1,4 @@
-# paco-juego
+# [paco-juego](tinyurl.com/paco-juego)
 - [x] Hagan plantillas de página
 - [x] Hagan flujo de ejemplo
 - [ ] Guardar estado a local storage
