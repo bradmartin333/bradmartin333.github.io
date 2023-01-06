@@ -13,13 +13,13 @@ function checkCode() {
         }
     }
     if (code == "") {
-        window.history.back()
+        window.history.back() // Doesn't seem to work on mobile
     } else {
         window.location.href = ['pages/', String(code), '.html'].join('');
     }
 }
 
-function autoTab(current,to)
+function autoTab(current,to) // Doesn't seem to work on mobile
 {
     if (current.getAttribute && current.value.length==current.getAttribute("maxlength")) {
         to.focus() 
