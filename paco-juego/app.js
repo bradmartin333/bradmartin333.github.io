@@ -1,3 +1,9 @@
+function copyCode() {
+    let code = document.getElementById('specialCode').innerHTML;
+    navigator.clipboard.writeText(code);
+    alert('Código especial copiado');
+}
+
 function loadCode() {
     let path = window.location.pathname;
     let page = path.split("/").pop().split('.')[0];
