@@ -1,10 +1,43 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-<body onload="goBackTwoSpaces()">
-<script>
-function goBackTwoSpaces() {
-  history.go(-2);
-}
-</script>
+
+<head>
+  <title>404</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    p {
+      text-align: center;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+  <p>There's nothing here.<br>Move back 2 spaces!</p>
+  <p id="countdown">5</p>
+
+  <script>
+    let countdownSecs = 4;
+    // Update the countdown every 1 second
+    var x = setInterval(function () {
+      document.getElementById("countdown").innerHTML = countdownSecs;
+      countdownSecs--;
+      // If the countdown is over, go back 2 pages
+      if (countdownSecs === 0) {
+        window.history.go(-2);
+      }
+    }, 1000);
+  </script>
 </body>
+
 </html>
