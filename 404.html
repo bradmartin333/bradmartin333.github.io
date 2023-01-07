@@ -27,13 +27,13 @@
   <p id="countdown">5</p>
 
   <script>
-    let countdownSecs = 4;
+    let countdownSecs = 4; // Takes 1 second to run the first interval
     // Update the countdown every 1 second
     var x = setInterval(function () {
       document.getElementById("countdown").innerHTML = countdownSecs;
       countdownSecs--;
       // If the countdown is over, go back 2 pages
-      if (countdownSecs === 0) {
+      if (countdownSecs < 0) {
         window.history.go(-2);
       }
     }, 1000);
