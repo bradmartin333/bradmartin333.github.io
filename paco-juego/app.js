@@ -1,7 +1,7 @@
 function copyCode() {
     let code = document.getElementById('specialCode').innerHTML;
     navigator.clipboard.writeText(code);
-    alert('Código especial copiado');
+    alert('Código especial copiado: ' + code);
 }
 
 function loadCode() {
