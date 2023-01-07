@@ -30,6 +30,8 @@ body {
   justify-content: center;
   min-height: 100vh;
   background-image: url('../assets/images/background/green-subtle.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text1);
   gap: var(--spacing);
   padding: calc(var(--spacing) * 2);
