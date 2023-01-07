@@ -28,11 +28,11 @@ function autoTab(current,to) // Doesn't seem to work on mobile
 
 function handlePaste(e) {
     var clipboardData, pastedData;
-  
+
     // Stop data actually being pasted
     e.stopPropagation();
     e.preventDefault();
-  
+
     // Get pasted data via clipboard API
     clipboardData = e.clipboardData || window.clipboardData;
     pastedData = clipboardData.getData('Text');
@@ -41,10 +41,12 @@ function handlePaste(e) {
     while (pastedData.length < 5) {
         pastedData += " ";
     }
-    
+
     document.getElementsByName('first')[0].value = pastedData.charAt(0);
     document.getElementsByName('second')[0].value = pastedData.charAt(1);
     document.getElementsByName('third')[0].value = pastedData.charAt(2);
     document.getElementsByName('fourth')[0].value = pastedData.charAt(3);
     document.getElementsByName('fifth')[0].value = pastedData.charAt(4);
-  }
+
+    checkCode();
+}
