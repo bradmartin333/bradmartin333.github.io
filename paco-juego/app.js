@@ -1,7 +1,6 @@
 function copyCode() {
     let code = document.getElementById('specialCode').innerHTML;
-    navigator.clipboard.writeText(code);
-    alert('Código especial copiado: ' + code);
+    navigator.clipboard.writeText(code); // Only works in secure contexts
 }
 
 function loadCode() {
@@ -19,14 +18,13 @@ function checkCode() {
         }
     }
     if (code == "") {
-        window.history.back() // Doesn't seem to work on mobile
+        window.history.back() 
     } else {
         window.location.href = ['pages/', String(code), '.html'].join('');
     }
 }
 
-function autoTab(current,to) // Doesn't seem to work on mobile
-{
+function autoTab(current,to) {
     if (current.getAttribute && current.value.length==current.getAttribute("maxlength")) {
         to.focus() 
     }
