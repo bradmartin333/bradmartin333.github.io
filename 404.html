@@ -30,6 +30,11 @@
     let countdownSecs = 4; // Takes 1 second to run the first interval
     // Update the countdown every 1 second
     var x = setInterval(function () {
+      // Check if the go back actually worked
+      if (countdownSecs == 0) {
+        window.location.href = 'index.html';
+      }
+      // Update and decrement
       document.getElementById("countdown").innerHTML = countdownSecs;
       countdownSecs--;
       // If the countdown is over, go back 2 pages
