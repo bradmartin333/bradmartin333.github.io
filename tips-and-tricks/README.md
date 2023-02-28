@@ -36,6 +36,9 @@
 ### USB Devices
 - Get video sources `Get-PnpDevice -PresentOnly | Where-Object { $_.Description -match '.*(?:Video|Camera).*' }`
 
+### Executables
+- Capture output `$output = .\my.exe -f flags 2>&1 | Out-String`
+
 # ImageMagick
 ### GIFs
 - Make `magick -delay 20 *.png movie.gif`
