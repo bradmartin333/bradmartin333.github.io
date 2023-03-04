@@ -18,7 +18,7 @@ if ($Verb) {
 }
 
 $Translation = New-Object System.Collections.Generic.List[System.Object]
-$Uri = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=$Text"
+$Uri = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=$Text"
 $RawResponse = (Invoke-WebRequest -Uri $Uri -Method Get).Content
 
 if ($Verb) {
