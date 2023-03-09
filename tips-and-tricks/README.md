@@ -45,6 +45,7 @@
 - Extract frames `magick mogrify -format png *.gif`
 - Crop `magick input.gif -coalesce -repage 0x0 -gravity Center -crop 25% +repage output.gif`
 - Spin an image `magick convert input.jpg -duplicate 23 -distort SRT %[fx:t*360/n] -set delay 10 -loop 0 output.gif`
+- Compress `magick mogrify -layers 'optimize' -fuzz 7% movie.gif`
 ### Filters
 - Crop `magick mogrify -crop 300x300+150+150 -path ./cropped *.png`
 - Grayscale `magick <img_in> -set colorspace Gray -separate -evaluate-sequence Mean <img_out>`
