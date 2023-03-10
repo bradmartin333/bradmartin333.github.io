@@ -1,3 +1,5 @@
+### The purpose of this page is to have an easy to access cheatsheet for the snippets of code that I frequently use.
+
 # PowerShell
 ### Regex
 - Regex from file `Get-Content .\regex15.txt | Select-String -Pattern "x*[#:.]y*" | Write-Host`
