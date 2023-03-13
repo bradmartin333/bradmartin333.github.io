@@ -1,4 +1,4 @@
-### The purpose of this page is to have an easy to access cheatsheet for the snippets of code that I frequently use.
+### The purpose of this page is to have an easy to access cheatsheet for the snippets of code that I frequently use
 
 # PowerShell
 ### Regex
