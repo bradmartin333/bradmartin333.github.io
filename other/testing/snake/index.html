@@ -47,7 +47,7 @@
   <script>
    var audioBtn=document.querySelector("#btn-audio");const audioContexList=[];function toggleAudio(){var t=!1;audioContexList.forEach((e=>{"suspended"==e.state?(e.resume(),t=!0):"running"==e.state&&e.suspend()})),audioBtn.value=t?"🔇 SUSPEND":"🔈 RESUME"}self.AudioContext=new Proxy(self.AudioContext,{construct(t,e){const n=new t(...e);return audioContexList.push(n),"suspended"==n.state&&(audioBtn.value="🔈 RESUME"),n}})
   </script>
-  <script async="" src="out.js">
+  <script async="" src="index.js">
   </script>
  </body>
 </html>

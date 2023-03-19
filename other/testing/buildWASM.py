@@ -38,7 +38,7 @@ inputPath = os.path.join(args['input'], 'main.c')
 if not os.path.exists(inputPath):
     print('Input path {} does not exist'.format(inputPath))
     exit(0)
-outputPath = os.path.join(args['output'], 'out.html')
+outputPath = os.path.join(args['output'], 'index.html')
 
 if not args['nobuild']:
     raylibSrcDir = 'C:/raylib/raylib/src'
