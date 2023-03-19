@@ -142,7 +142,11 @@ void InitGame(void)
 // Update game (one frame)
 void UpdateGame(void)
 {
-    int currentGesture = GetGestureDetected();
+    bool tapped = GetGestureDetected() == GESTURE_TAP;
+    Vector2 touch = GetTouchPosition(0);
+    if (!tapped) {
+        touch = (Vector2){ 225, 225 };
+    }
     
     if (!gameOver)
     {
@@ -151,22 +155,22 @@ void UpdateGame(void)
         if (!pause)
         {
             // Player control
-            if ((currentGesture == GESTURE_SWIPE_RIGHT || IsKeyPressed(KEY_RIGHT)) && (snake[0].speed.x == 0) && allowMove)
+            if ((touch.x > 360 || IsKeyPressed(KEY_RIGHT)) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if ((currentGesture == GESTURE_SWIPE_LEFT || IsKeyPressed(KEY_LEFT)) && (snake[0].speed.x == 0) && allowMove)
+            if ((touch.x < 90 || IsKeyPressed(KEY_LEFT)) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ -SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if ((currentGesture == GESTURE_SWIPE_UP || IsKeyPressed(KEY_UP)) && (snake[0].speed.y == 0) && allowMove)
+            if ((touch.y < 90 || IsKeyPressed(KEY_UP)) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, -SQUARE_SIZE };
                 allowMove = false;
             }
-            if ((currentGesture == GESTURE_SWIPE_DOWN || IsKeyPressed(KEY_DOWN)) && (snake[0].speed.y == 0) && allowMove)
+            if ((touch.y > 360 || IsKeyPressed(KEY_DOWN)) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, SQUARE_SIZE };
                 allowMove = false;
@@ -233,7 +237,7 @@ void UpdateGame(void)
     }
     else
     {
-        if (currentGesture == GESTURE_TAP || IsKeyPressed(KEY_ENTER))
+        if (tapped || IsKeyPressed(KEY_ENTER))
         {
             InitGame();
             gameOver = false;
