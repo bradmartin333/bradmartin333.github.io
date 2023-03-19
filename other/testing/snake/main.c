@@ -142,7 +142,7 @@ void InitGame(void)
 // Update game (one frame)
 void UpdateGame(void)
 {
-    bool tapped = GetGestureDetected() == GESTURE_TAP;
+    bool tapped = GetTouchPointCount() == 1;
     Vector2 touch = GetTouchPosition(0);
     if (!tapped) {
         touch = (Vector2){ 225, 225 };
@@ -273,7 +273,7 @@ void DrawGame(void)
 
             if (pause) DrawText("GAME PAUSED", screenWidth/2 - MeasureText("GAME PAUSED", 40)/2, screenHeight/2 - 40, 40, GRAY);
         }
-        else DrawText("PRESS [ENTER] TO PLAY AGAIN", GetScreenWidth()/2 - MeasureText("PRESS [ENTER] TO PLAY AGAIN", 20)/2, GetScreenHeight()/2 - 50, 20, GRAY);
+        else DrawText("ENTER or TAP TO PLAY AGAIN", GetScreenWidth()/2 - MeasureText("ENTER or TAP TO PLAY AGAIN", 20)/2, GetScreenHeight()/2 - 50, 20, GRAY);
 
     EndDrawing();
 }
