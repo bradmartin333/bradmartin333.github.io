@@ -142,12 +142,6 @@ void InitGame(void)
 // Update game (one frame)
 void UpdateGame(void)
 {
-    bool tapped = GetTouchPointCount() == 1;
-    Vector2 touch = GetTouchPosition(0);
-    if (!tapped) {
-        touch = (Vector2){ 225, 225 };
-    }
-    
     if (!gameOver)
     {
         if (IsKeyPressed('P')) pause = !pause;
@@ -155,22 +149,22 @@ void UpdateGame(void)
         if (!pause)
         {
             // Player control
-            if ((touch.x > 360 || IsKeyPressed(KEY_RIGHT)) && (snake[0].speed.x == 0) && allowMove)
+            if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if ((touch.x < 90 || IsKeyPressed(KEY_LEFT)) && (snake[0].speed.x == 0) && allowMove)
+            if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ -SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if ((touch.y < 90 || IsKeyPressed(KEY_UP)) && (snake[0].speed.y == 0) && allowMove)
+            if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, -SQUARE_SIZE };
                 allowMove = false;
             }
-            if ((touch.y > 360 || IsKeyPressed(KEY_DOWN)) && (snake[0].speed.y == 0) && allowMove)
+            if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, SQUARE_SIZE };
                 allowMove = false;
@@ -237,7 +231,7 @@ void UpdateGame(void)
     }
     else
     {
-        if (tapped || IsKeyPressed(KEY_ENTER))
+        if (IsKeyPressed(KEY_ENTER))
         {
             InitGame();
             gameOver = false;
@@ -273,7 +267,7 @@ void DrawGame(void)
 
             if (pause) DrawText("GAME PAUSED", screenWidth/2 - MeasureText("GAME PAUSED", 40)/2, screenHeight/2 - 40, 40, GRAY);
         }
-        else DrawText("ENTER or TAP TO PLAY AGAIN", GetScreenWidth()/2 - MeasureText("ENTER or TAP TO PLAY AGAIN", 20)/2, GetScreenHeight()/2 - 50, 20, GRAY);
+        else DrawText("PRESS [ENTER] TO PLAY AGAIN", GetScreenWidth()/2 - MeasureText("PRESS [ENTER] TO PLAY AGAIN", 20)/2, GetScreenHeight()/2 - 50, 20, GRAY);
 
     EndDrawing();
 }
