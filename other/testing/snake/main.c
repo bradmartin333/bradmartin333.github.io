@@ -43,7 +43,7 @@ typedef struct Food {
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
-static const int screenWidth = 800;
+static const int screenWidth = 450;
 static const int screenHeight = 450;
 
 static int framesCounter = 0;
