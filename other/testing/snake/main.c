@@ -142,6 +142,8 @@ void InitGame(void)
 // Update game (one frame)
 void UpdateGame(void)
 {
+    int currentGesture = GetGestureDetected();
+    
     if (!gameOver)
     {
         if (IsKeyPressed('P')) pause = !pause;
@@ -149,22 +151,22 @@ void UpdateGame(void)
         if (!pause)
         {
             // Player control
-            if (IsKeyPressed(KEY_RIGHT) && (snake[0].speed.x == 0) && allowMove)
+            if ((currentGesture == GESTURE_SWIPE_RIGHT || IsKeyPressed(KEY_RIGHT)) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if (IsKeyPressed(KEY_LEFT) && (snake[0].speed.x == 0) && allowMove)
+            if ((currentGesture == GESTURE_SWIPE_LEFT || IsKeyPressed(KEY_LEFT)) && (snake[0].speed.x == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ -SQUARE_SIZE, 0 };
                 allowMove = false;
             }
-            if (IsKeyPressed(KEY_UP) && (snake[0].speed.y == 0) && allowMove)
+            if ((currentGesture == GESTURE_SWIPE_UP || IsKeyPressed(KEY_UP)) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, -SQUARE_SIZE };
                 allowMove = false;
             }
-            if (IsKeyPressed(KEY_DOWN) && (snake[0].speed.y == 0) && allowMove)
+            if ((currentGesture == GESTURE_SWIPE_DOWN || IsKeyPressed(KEY_DOWN)) && (snake[0].speed.y == 0) && allowMove)
             {
                 snake[0].speed = (Vector2){ 0, SQUARE_SIZE };
                 allowMove = false;
@@ -231,7 +233,7 @@ void UpdateGame(void)
     }
     else
     {
-        if (IsKeyPressed(KEY_ENTER))
+        if (currentGesture == GESTURE_TAP || IsKeyPressed(KEY_ENTER))
         {
             InitGame();
             gameOver = false;
