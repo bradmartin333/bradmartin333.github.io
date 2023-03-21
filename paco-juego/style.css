@@ -5,6 +5,9 @@ body {
     color: whitesmoke;
     background-image: url('./assets/images/background/green-subtle.jpg');
     background-repeat: no-repeat;
+    width: min(100%, 30em);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 header {
@@ -55,7 +58,7 @@ a:active {
     overflow: hidden;
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: min(100%, 30em);
 }
 
 /* Style the links inside the navigation bar */
