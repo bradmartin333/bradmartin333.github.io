@@ -32,6 +32,10 @@
         var delayMs = 1000;
         var tapCount = 0;
 
+        var cycleColors = ['conic-gradient(at 100% 100%, white, yellow, green)',
+            'conic-gradient(at 100% 100%, white, yellow, purple)',
+            'conic-gradient(at 100% 100%, white, yellow, red)'];
+
         async function deliverPackage() {
             var msgs = ['Ingresando información...',
                 'Haga clic en comprar',
@@ -48,6 +52,9 @@
             main.innerHTML += "<br><br>¿Y ahora qué?";
 
             document.getElementById('choices').style.display = 'block';
+            document.body.style.background = 'conic-gradient(at 100% 100%, white, rgb(43, 110, 58), rgb(49, 49, 105))';
+            document.body.style.backgroundAttachment = 'fixed';
+            tapCount = cycleColors.length + 1;
         }
 
         function sleep(milliseconds) {
@@ -58,10 +65,6 @@
             } while (currentDate - date < milliseconds);
         }
 
-        var cycleColors = ["#7aa457",
-            "#a46cb7",
-            "#cb6a49"];
-
         document.addEventListener('pointerdown', (event) => {
             if (tapCount > cycleColors.length) {
                 return;
@@ -69,9 +72,9 @@
             if (tapCount == cycleColors.length) {
                 document.getElementsByClassName("main")[0].innerHTML += "<br><br><b>¡Que pedo! ¡Me daré prisa!</b><br>";
                 delayMs = 1;
-                document.body.style.background = '';
             }
             document.body.style.background = cycleColors[tapCount];
+            document.body.style.backgroundAttachment = 'fixed';
             tapCount++;
         });
     </script>
