@@ -7,12 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/3.0.0/pure-min.css" integrity="sha512-X2yGIVwg8zeG8N4xfsidr9MqIfIE8Yz1It+w2rhUJMqxUwvbVqC5OPcyRlPKYOw/bsdJut91//NO9rSbQZIPRQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
 </head>
 
 <body style="text-align: center; height: 100vh;">
     <h1>How did I get here?</h1>
-    <h4>Well, I hope to answer that question with a pan and zoom chart</h4>
+    <h3>Well, I hope to answer that question with a chart</h3>
 
     <pre class="mermaid">
         graph TD;
@@ -41,24 +40,10 @@
             class V wow;
     </pre>
 
-    <button type="button" onclick="window.location.href='../index.html';">Home</button>
+    <button type="button" onclick="window.location.href='../index.html';" style="margin-bottom: 20px;">Main Page</button>
 
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-
-        async function attachPanZoom() {
-            while (document.getElementsByTagName('svg').length == 0) {
-                await new Promise(r => setTimeout(r, 100));
-            }
-            let svgElem = document.getElementsByTagName('svg')[0];
-            svgPanZoom(svgElem);
-            svgElem.style.borderStyle = "solid";
-            svgElem.style.minHeight = "80vh";
-            svgElem.style.borderColor = "#daa7ce";
-            svgElem.style.borderRadius = "20px";
-            svgElem.style.borderWidth = "5px";
-        }
-        attachPanZoom();
     </script>
 </body>
 
