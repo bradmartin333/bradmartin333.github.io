@@ -11,17 +11,15 @@
     <script type="text/javascript" src="../app.js"></script>
 </head>
 
-<body onload="loadCode()">
+<body onload="loadCode(); deliverPackage();">
     <div class="main">
-        Sí, supongo que tienes un punto. Compraré esto cuerda de saltar rosado y verde.
-        ¿Cuál método de compra?
+        Sí, supongo que tienes un punto. Compraré esto cuerda de saltar rosado y verde.<br>
     </div>
 
     <hr>
-    <div style="text-align: center;">
-        <a class="choice" href="UVNCJ.html">PayPal</a><br>
-        <a class="choice" href="W5O6T.html">Tarjeta de crédito</a><br>
-        <a class="choice" href="WW16Q.html">Transferencia bancaria</a><br>
+    <div id="choices" style="text-align: center; display: none;">
+        <a class="choice" onclick="openUrl()" href="#">Navegar por la Red</a><br>
+        <a class="choice" href="W5O6T.html">¡Salta la cuerda!</a><br>
     </div>
 
     <div class="navbar">
@@ -29,6 +27,57 @@
         <a href="../special-code/index.html">Código Especial</a>
         <a href="javascript:copyCode()" id="specialCode"></a>
     </div>
+
+    <script>
+        var delayMs = 1000;
+        var tapCount = 0;
+
+        var cycleColors = ['conic-gradient(at 100% 100%, white, yellow, green)',
+            'conic-gradient(at 100% 100%, white, yellow, purple)',
+            'conic-gradient(at 100% 100%, white, yellow, red)'];
+
+        async function deliverPackage() {
+            var msgs = ['Ingresando información...',
+                'Haga clic en comprar',
+                'Paquete enviado...',
+                '...en el centro de distribución local',
+                '¡Es aquí!'];
+
+            await new Promise(resolve => setTimeout(resolve, delayMs * 2));
+            let main = document.getElementsByClassName("main")[0];
+            for (let i = 0; i < msgs.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, delayMs * i));
+                main.innerHTML += "<br>" + msgs[i].toString();
+            }
+            main.innerHTML += "<br><br>¿Y ahora qué?";
+
+            document.getElementById('choices').style.display = 'block';
+            document.body.style.background = 'conic-gradient(at 100% 100%, white, rgb(43, 110, 58), rgb(49, 49, 105))';
+            document.body.style.backgroundAttachment = 'fixed';
+            tapCount = cycleColors.length + 1;
+        }
+
+        function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+        }
+
+        document.addEventListener('pointerdown', (event) => {
+            if (tapCount > cycleColors.length) {
+                return;
+            }
+            if (tapCount == cycleColors.length) {
+                document.getElementsByClassName("main")[0].innerHTML += "<br><br><b>¡Que pedo! ¡Me daré prisa!</b><br>";
+                delayMs = 1;
+            }
+            document.body.style.background = cycleColors[tapCount];
+            document.body.style.backgroundAttachment = 'fixed';
+            tapCount++;
+        });
+    </script>
 </body>
 
 </html>

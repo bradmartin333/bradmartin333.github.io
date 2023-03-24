@@ -3,8 +3,14 @@ body {
     font-weight: normal;
     font-size: 20px;
     color: whitesmoke;
-    background-image: url('./assets/images/background/green-subtle.jpg');
-    background-repeat: no-repeat;
+    background: gray;
+    /* For browsers that do not support gradients */
+    background: conic-gradient(at 100% 100%, white, rgb(43, 110, 58), rgb(49, 49, 105));
+    background-attachment: fixed;
+    width: min(100%, 30em);
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 60px;
 }
 
 header {
@@ -23,6 +29,7 @@ header {
     display: grid;
     height: 100%;
 }
+
 .center-fit {
     max-width: 100%;
     max-height: 100vh;
@@ -55,7 +62,7 @@ a:active {
     overflow: hidden;
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: min(100%, 30em);
 }
 
 /* Style the links inside the navigation bar */
