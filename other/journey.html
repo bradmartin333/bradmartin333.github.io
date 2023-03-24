@@ -6,13 +6,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/3.0.0/pure-min.css" integrity="sha512-X2yGIVwg8zeG8N4xfsidr9MqIfIE8Yz1It+w2rhUJMqxUwvbVqC5OPcyRlPKYOw/bsdJut91//NO9rSbQZIPRQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
 </head>
 
 <body style="text-align: center; height: 100vh;">
-    <h1 style="padding: 0; margin: 20px 0 0 0;">How did I get here?</h1>
-    <h4 style="padding: 0; margin: 0;">Well, I hope to answer that question with a pan and zoom chart</h4>
+    <h1>How did I get here?</h1>
+    <h4>Well, I hope to answer that question with a pan and zoom chart</h4>
 
     <pre class="mermaid">
         graph TD;
@@ -50,11 +50,13 @@
             while (document.getElementsByTagName('svg').length == 0) {
                 await new Promise(r => setTimeout(r, 100));
             }
-            svgPanZoom(document.getElementsByTagName('svg')[0]);
-
-            // set the min-height of the svg to the height of the window
-            // so that the svg is always visible
-            document.getElementsByTagName('svg')[0].style.minHeight = "50vh";
+            let svgElem = document.getElementsByTagName('svg')[0];
+            svgPanZoom(svgElem);
+            svgElem.style.borderStyle = "solid";
+            svgElem.style.minHeight = "80vh";
+            svgElem.style.borderColor = "#daa7ce";
+            svgElem.style.borderRadius = "20px";
+            svgElem.style.borderWidth = "5px";
         }
         attachPanZoom();
     </script>
