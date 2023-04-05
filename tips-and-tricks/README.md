@@ -1,4 +1,14 @@
-### The purpose of this page is to have an easy to access cheatsheet for the snippets of code that I frequently use
+### The purpose of this page is list my favorite tools and to have an easy to access cheatsheet for the snippets of code that I frequently use
+
+# Other Tools
+- [insect](https://insect.sh/): high precision scientific calculator with full support for physical units
+- [typst](https://typst.app/): like [overleaf](https://overleaf.com/), but with optimizations and built with rust
+- [proton](https://proton.me/): a great alternative to google's environment
+- [ScreenToGif](https://www.screentogif.com/): screen, webcam and sketchboard recorder with an integrated editor
+- [toptal](https://www.toptal.com/utilities-tools): useful and effective digital tools and online utilities
+- [iwanthue](https://medialab.github.io/iwanthue/): generate and refine palettes of optimally distinct colors
+- [latex-pretty](https://c.albert-thompson.com/latex-pretty/): online LaTeX formatter
+- [cobalt](https://co.wukko.me/): simple content downloader
 
 # PowerShell
 ### Regex
