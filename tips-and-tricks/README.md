@@ -1,6 +1,6 @@
-### The purpose of this page is list my favorite tools and to have an easy to access cheatsheet for the snippets of code that I frequently use
+## The purpose of this page is list my favorite tools and to have an easy to access cheatsheet for the snippets of code that I frequently use
+#### I am very excited for CLI AI tools so that I can automate my workflow even more <- (copilot wrote that last bit for me)
 
-# Other Tools
 - [insect](https://insect.sh/): high precision scientific calculator with full support for physical units
 - [typst](https://typst.app/): like [overleaf](https://overleaf.com/), but with optimizations and built with rust
 - [proton](https://proton.me/): a great alternative to google's environment
