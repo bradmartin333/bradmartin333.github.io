@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Plot Histogram from JSON</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+</head>
+
+<body>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        // Create an XMLHttpRequest object.
+        var xhr = new XMLHttpRequest();
+
+        // Set the request method and the request URL.
+        xhr.open("GET", "https://api.inaturalist.org/v1/observations/histogram?iconic_taxa=Fungi&nelat=36.130692&nelng=-79.159016&swlat=35.387749&swlng=-78.268999&date_field=observed&interval=day");
+
+        // Callback function that will be called when the request is complete.
+        xhr.onload = function () {
+
+            // Check if the request was successful.
+            if (xhr.status === 200) {
+
+                // Get the JSON response.
+                var jsonResponse = JSON.parse(xhr.responseText);
+
+                // Get the data from the response JSON.
+                var allData = jsonResponse.results.day;
+
+                // Convert allData to an array
+                allData = Object.entries(allData);
+
+                // Get the labels, which is the first element of each allData element.
+                jsonResponse.labels = allData.map(function (element) {
+                    return element[0];
+                });
+
+                // Get the data, which is the second element of each allData element.
+                jsonResponse.data = allData.map(function (element) {
+                    return element[1];
+                });
+
+                // Create a new Chart object.
+                var chart = new Chart(document.getElementById("myChart"), {
+                    title: "Number of Fungi Observations by Day in the greater Durham, NC area",
+                    type: "bar",
+                    data: {
+                        labels: jsonResponse.labels,
+                        datasets: [{
+                            label: "Fungi Observations",
+                            data: jsonResponse.data,
+                            backgroundColor: "blue"
+                        }]
+                    },
+                    options: {
+                        title: {
+                            text: "Number of Fungi Observations by Day"
+                        }
+                    }
+                });
+
+                console.log(jsonResponse);
+            } else {
+
+                // The request was not successful.
+                alert("Error: " + xhr.status);
+
+            }
+
+        };
+
+        // Send the request.
+        xhr.send();
+    </script>
+</body>
+
+</html>
