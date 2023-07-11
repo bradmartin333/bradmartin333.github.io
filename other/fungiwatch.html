@@ -44,7 +44,6 @@
 
                 // Create a new Chart object.
                 var chart = new Chart(document.getElementById("myChart"), {
-                    title: "Number of Fungi Observations by Day in the greater Durham, NC area",
                     type: "bar",
                     data: {
                         labels: jsonResponse.labels,
@@ -56,7 +55,11 @@
                     },
                     options: {
                         title: {
-                            text: "Number of Fungi Observations by Day"
+                            display: true,
+                            text: "Number of fungi observations by day for the last year in the greater Durham, NC area"
+                        },
+                        legend: {
+                            display: false,
                         }
                     }
                 });
