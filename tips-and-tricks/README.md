@@ -10,6 +10,11 @@
 - [latex-pretty](https://c.albert-thompson.com/latex-pretty/): online LaTeX formatter
 - [cobalt](https://co.wukko.me/): simple content downloader
 
+# Python
+### pipreqs
+- `pip install pipreqs`
+- `pipreqs /home/project/location`
+
 # PowerShell
 ### Regex
 - Regex from file `Get-Content .\regex15.txt | Select-String -Pattern "x*[#:.]y*" | Write-Host`
