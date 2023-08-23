@@ -14,6 +14,7 @@
 ### pipreqs
 - `pip install pipreqs`
 - `pipreqs /home/project/location`
+- If Python is not added to PATH (Non-admin install): `C:\Users\<user>\AppData\Roaming\Python\Python311\Scripts\pipreqs.exe . --force`
 
 # PowerShell
 ### Regex
