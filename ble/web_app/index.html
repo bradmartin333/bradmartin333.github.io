@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BLE UART Test App</title>
+    <link rel="stylesheet" href="css/pico.min.css">
+    <script src="scripts/ble_functions.js"></script>
+</head>
+
+<body>
+    <div class="container" style="text-align:center;">
+        <h1>Welcome to the BLE UART test app!</h1>
+        <input type="text" class="text-entry" style="text-align:center;" placeholder="Device Name" id="deviceName">
+        <button class="button" onclick="bleConnect()">Connect</button>
+        </br>
+        <input type="text" class="text-entry" style="text-align:center;" placeholder="Message to Send" id="toSend">
+        <button class="button" onclick="sendValue()">Send</button>
+        </br>
+        <textarea id="message" rows="5" cols="30"></textarea>
+    </div>
+</body>
+
+</html>
