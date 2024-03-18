@@ -45,6 +45,11 @@
 
 ### Parsing
 - JSON `$users = $response | ConvertFrom-Json`
+- JSON and regex
+```
+$matches = (Get-Content -Raw -Path 'data.json' | Out-String | ConvertFrom-Json) | Where-Object { $_.id -lt 4 }
+$matches | ConvertTo-Json | Out-File 'matches.json'
+```
 
 ### USB Devices
 - Get video sources `Get-PnpDevice -PresentOnly | Where-Object { $_.Description -match '.*(?:Video|Camera).*' }`
