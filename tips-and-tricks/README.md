@@ -78,6 +78,7 @@ $matches | ConvertTo-Json | Out-File 'matches.json'
 - Trim `ffmpeg -ss 00:07 -to 00:59 -i <input> -c:v copy -c:a copy <output>`
 - Add timestamp `ffmpeg -i input.mp4 -filter:v drawtext="fontfile=/Windows/Fonts/cour.ttf:fontsize=150:fontcolor='white':box=1:boxcolor='black@0.5':boxborderw=5:timecode='00\:00\:00;00':timecode_rate=(30*1000/1001):x=(w-text_w):y=(h-text_h)" output.mp4`
 - Strip audio `ffmpeg -i $input_file -c copy -an $output_file`
+- Extract audio `ffmpeg -i input_file.mp4 -q:a 0 -map a output_file.mp3`
 - Equalizers `ffmpeg -i .\DSCN2375.MOV -vf eq=brightness=0.5:saturation=2 -c:a copy output3.mov` see [the docs](https://ffmpeg.org/ffmpeg-filters.html#eq)
 - [Picture in pictire](https://www.oodlestechnologies.com/blogs/PICTURE-IN-PICTURE-effect-using-FFMPEG/)
 - [MP4 to GIF](https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality)
