@@ -5,6 +5,29 @@
 - [iwanthue](https://medialab.github.io/iwanthue/): generate and refine palettes of optimally distinct colors
 - [cobalt](https://co.wukko.me/): simple content downloader
 
+# ImageMagick
+### GIFs
+- Make `magick -delay 20 *.png movie.gif`
+- Extract frames `magick mogrify -format png *.gif`
+- Crop `magick input.gif -coalesce -repage 0x0 -gravity Center -crop 25% +repage output.gif`
+- Spin an image `magick convert input.jpg -duplicate 23 -distort SRT %[fx:t*360/n] -set delay 10 -loop 0 output.gif`
+- Compress `magick mogrify -layers 'optimize' -fuzz 7% movie.gif`
+### Filters
+- Crop `magick mogrify -crop 300x300+150+150 -path ./cropped *.png`
+- Grayscale `magick <img_in> -set colorspace Gray -separate -evaluate-sequence Mean <img_out>`
+- Resize `magick mogrify ./ -resize 20% -quality 80  *.png`
+### Other
+- Make icon `magick Capture.png -define icon:auto-resize=256,64,48,32,16 capture.ico`
+
+# FFMPEG
+- Trim `ffmpeg -ss 00:07 -to 00:59 -i <input> -c:v copy -c:a copy <output>`
+- Add timestamp `ffmpeg -i input.mp4 -filter:v drawtext="fontfile=/Windows/Fonts/cour.ttf:fontsize=150:fontcolor='white':box=1:boxcolor='black@0.5':boxborderw=5:timecode='00\:00\:00;00':timecode_rate=(30*1000/1001):x=(w-text_w):y=(h-text_h)" output.mp4`
+- Strip audio `ffmpeg -i $input_file -c copy -an $output_file`
+- Extract audio `ffmpeg -i input_file.mp4 -q:a 0 -map a output_file.mp3`
+- Equalizers `ffmpeg -i .\DSCN2375.MOV -vf eq=brightness=0.5:saturation=2 -c:a copy output3.mov` see [the docs](https://ffmpeg.org/ffmpeg-filters.html#eq)
+- [Picture in pictire](https://www.oodlestechnologies.com/blogs/PICTURE-IN-PICTURE-effect-using-FFMPEG/)
+- [MP4 to GIF](https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality)
+
 # Python
 ### pipreqs
 - `pip install pipreqs`
@@ -57,31 +80,8 @@ $matches | ConvertTo-Json | Out-File 'matches.json'
 ### Executables
 - Capture output `$output = .\my.exe -f flags 2>&1 | Out-String`
 
-# ImageMagick
-### GIFs
-- Make `magick -delay 20 *.png movie.gif`
-- Extract frames `magick mogrify -format png *.gif`
-- Crop `magick input.gif -coalesce -repage 0x0 -gravity Center -crop 25% +repage output.gif`
-- Spin an image `magick convert input.jpg -duplicate 23 -distort SRT %[fx:t*360/n] -set delay 10 -loop 0 output.gif`
-- Compress `magick mogrify -layers 'optimize' -fuzz 7% movie.gif`
-### Filters
-- Crop `magick mogrify -crop 300x300+150+150 -path ./cropped *.png`
-- Grayscale `magick <img_in> -set colorspace Gray -separate -evaluate-sequence Mean <img_out>`
-- Resize `magick mogrify ./ -resize 20% -quality 80  *.png`
-### Other
-- Make icon `magick Capture.png -define icon:auto-resize=256,64,48,32,16 capture.ico`
-
 # Visual Studio
 - Publish NuGet `dotnet nuget push <package>.nupkg --api-key <key> --source https://api.nuget.org/v3/index.json`
-
-# FFMPEG
-- Trim `ffmpeg -ss 00:07 -to 00:59 -i <input> -c:v copy -c:a copy <output>`
-- Add timestamp `ffmpeg -i input.mp4 -filter:v drawtext="fontfile=/Windows/Fonts/cour.ttf:fontsize=150:fontcolor='white':box=1:boxcolor='black@0.5':boxborderw=5:timecode='00\:00\:00;00':timecode_rate=(30*1000/1001):x=(w-text_w):y=(h-text_h)" output.mp4`
-- Strip audio `ffmpeg -i $input_file -c copy -an $output_file`
-- Extract audio `ffmpeg -i input_file.mp4 -q:a 0 -map a output_file.mp3`
-- Equalizers `ffmpeg -i .\DSCN2375.MOV -vf eq=brightness=0.5:saturation=2 -c:a copy output3.mov` see [the docs](https://ffmpeg.org/ffmpeg-filters.html#eq)
-- [Picture in pictire](https://www.oodlestechnologies.com/blogs/PICTURE-IN-PICTURE-effect-using-FFMPEG/)
-- [MP4 to GIF](https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality)
 
 # BOM
 - Best wire: *Silicone Stranded Wire, Digikey: 3239-22-1-*
