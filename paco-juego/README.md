@@ -22,3 +22,6 @@
 - ü = Alt + 0252
 - Ü = Alt + 0220
 - ¿ = Alt + 0191
+
+# Consejos
+- Iniciar servidor: `python -m http.server`
