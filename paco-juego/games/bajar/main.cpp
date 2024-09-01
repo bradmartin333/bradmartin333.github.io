@@ -1,48 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include <raylib.h>
 
-#if defined(PLATFORM_WEB)
-#include <emscripten/emscripten.h>
-#endif
+#define WIDTH 320
+#define HEIGHT 240
 
-int framesCounter = 0;
-int screenWidth = 320;
-int screenHeight = 240;
+enum Icon {
+  ICON_WATER_BOTTLE,
+  ICON_MOUNTAIN,
+  ICON_MAX
+};
 
-void UpdateGame(void)
+int codepoints[ICON_MAX] = {
+  0xe4c5,
+  0xf6fc
+};
+
+int main(int argc, char *argv[])
 {
-    framesCounter++;
-}
-
-void DrawGame(void)
-{
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-    EndDrawing();
-}
-
-void UpdateDrawFrame(void)
-{
-    UpdateGame();
-    DrawGame();
-}
-
-int main(void)
-{
-    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
-    InitWindow(screenWidth, screenHeight, "bajar");
-
-#if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
-#else
+    InitWindow(WIDTH, HEIGHT, "game");
     SetTargetFPS(60);
-    while (!WindowShouldClose()) // Detect window close button or ESC key
+    Font fa_regular = LoadFontEx("../include/fa-regular-400.ttf", 36, codepoints, ICON_MAX);
+    while (!WindowShouldClose())
     {
-        UpdateDrawFrame();
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawTextCodepoint(fa_regular, codepoints[ICON_WATER_BOTTLE], (Vector2){20.0f, 20.0f}, 36, MAROON);
+        EndDrawing();
     }
-#endif
     CloseWindow();
     return 0;
 }
