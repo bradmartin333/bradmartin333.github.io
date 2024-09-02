@@ -24,3 +24,5 @@ RayLib
 - `source ~/emsdk/emsdk_env.sh` to activate emsdk environment variables
 - `cd ~/raylib/src`
 - `make PLATFORM=PLATFORM_WEB`
+
+Run `../build.sh` from withing a game directory or `g++ main.cpp -lraylib -o test` for a test build
