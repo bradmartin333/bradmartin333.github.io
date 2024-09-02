@@ -2,8 +2,15 @@
 
 #define WIDTH 320
 #define HEIGHT 240
+#define GRID_X 7
+#define GRID_Y 6
+#define ICON_WID 44
+#define ICON_HGT 36
+#define INSET_X 6
+#define INSET_Y 12
 
-enum SolidIcon {
+enum Icon {
+  ICON_NONE,
   ICON_WATER_BOTTLE,
   ICON_MOUNTAIN,
   ICON_DIGGING,
@@ -13,10 +20,12 @@ enum SolidIcon {
   ICON_UP,
   ICON_AT,
   ICON_BOMB,
+  ICON_HEART,
   ICON_MAX,
 };
 
 int codepoints[ICON_MAX] = {
+  0x0,
   0xe4c5,
   0xf6fc,
   0xf85e,
@@ -26,49 +35,38 @@ int codepoints[ICON_MAX] = {
   0xf35b,
   0x40,
   0xf1e2,
+  0xf004,
 };
 
-int icon_idx = 0;
-float x = (float)((WIDTH-40)/2);
-float y = (float)((HEIGHT-36)/2);
-float speed = 1.0;
-int icon_wid = 0;
-int icon_hgt = 36;
+int grid[GRID_Y][GRID_X];
 
 int main(int argc, char *argv[])
 {
     InitWindow(WIDTH, HEIGHT, "game");
     SetTargetFPS(60);
-    Font fa_solid = LoadFontEx("../include/fa-solid.ttf", icon_hgt, codepoints, ICON_MAX);
+    Font fa_solid = LoadFontEx("../include/fa-solid.ttf", ICON_HGT, codepoints, ICON_MAX);
+
+    grid[0][0] = ICON_HEART;
+    grid[0][5] = ICON_AT;
+    grid[3][3] = ICON_BOMB;
+    grid[GRID_Y - 1][0] = ICON_WATER_BOTTLE;
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(WHITE);
-        
-        if (IsKeyDown(KEY_LEFT)) x -= 1 * speed;
-        if (IsKeyDown(KEY_RIGHT)) x += 1 * speed;
-        if (IsKeyDown(KEY_DOWN)) y += 1 * speed;
-        if (IsKeyDown(KEY_UP)) y -= 1 * speed;
-        if (IsKeyPressed(KEY_SPACE)) speed *= 2;
-        if (IsKeyPressed(KEY_A)) {
-          if (++icon_idx >= ICON_MAX)
-            icon_idx = 0;
+        for (int i = 0; i < GRID_X; i++) {
+          for (int j = 0; j < GRID_Y; j++) {
+            int wid = fa_solid.glyphs[grid[j][i]].advanceX;
+            int padding = (ICON_WID - wid) / 2;
+            DrawTextCodepoint(fa_solid, 
+                              codepoints[grid[j][i]], 
+                              (Vector2){(float)(INSET_X + padding + i * ICON_WID), 
+                                        (float)(INSET_Y + j * ICON_HGT)}, 
+                              ICON_HGT, 
+                              BLACK);
+          }
         }
-
-        icon_wid = fa_solid.glyphs[icon_idx].advanceX;
-
-        if (x < 0)
-          x = 0;
-        if (x > WIDTH-icon_wid)
-          x = WIDTH-icon_wid;
-        if (y < 0)
-          y = 0;
-        if (y > HEIGHT-icon_hgt)
-          y = HEIGHT-icon_hgt;
-
-        DrawRectangle(x, y, icon_wid, icon_hgt, BLACK);
-        DrawTextCodepoint(fa_solid, codepoints[icon_idx], (Vector2){x, y}, icon_hgt, YELLOW);
-
         EndDrawing();
     }
     CloseWindow();
