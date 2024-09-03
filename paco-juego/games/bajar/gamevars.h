@@ -1,3 +1,5 @@
+#include <ctime>
+
 constexpr int WID = 320;
 constexpr int HGT = 240;
 constexpr int GRID_X = 7;
@@ -9,19 +11,13 @@ constexpr int ICON_HGT = (HGT - (GRID_Y + 1) * ICON_GAP) / GRID_Y - ICON_GAP / G
 enum Icon {
   ICON_NONE,
   ICON_WATER_BOTTLE,
-  ICON_MOUNTAIN,
-  ICON_DIGGING,
-  ICON_DOWN,
-  ICON_LEFT,
-  ICON_RIGHT,
-  ICON_UP,
   ICON_AT,
   ICON_BOMB,
   ICON_HEART,
-  ICON_3,
-  ICON_2,
-  ICON_1,
   ICON_0,
+  ICON_1,
+  ICON_2,
+  ICON_3,
   ICON_W,
   ICON_EQUALS,
   ICON_MAX,
@@ -30,19 +26,13 @@ enum Icon {
 int codepoints[ICON_MAX] = {
   0x0,
   0xe4c5,
-  0xf6fc,
-  0xf85e,
-  0xf358,
-  0xf359,
-  0xf35a,
-  0xf35b,
   0x40,
   0xf1e2,
   0xf004,
-  0x33,
-  0x32,
-  0x31,
   0x30,
+  0x31,
+  0x32,
+  0x33,
   0x57,
   0x3d,
 };
@@ -50,22 +40,56 @@ int codepoints[ICON_MAX] = {
 Color icon_colors[ICON_MAX] = {
   WHITE,
   BLUE,
-  GREEN,
-  YELLOW,
-  MAROON,
-  MAROON,
-  MAROON,
-  MAROON,
   BLACK,
-  MAGENTA,
+  GOLD,
   RED,
   WHITE,
   WHITE,
   WHITE,
   WHITE,
-  BLACK,
+  BLUE,
   BLACK,
 };
 
 int grid[GRID_Y][GRID_X];
+Rectangle rects[GRID_Y][GRID_X];
+int hearts = 0;
+int waters = 3;
+int player_x = 5;
+int player_y = 0;
+bool playing = false;
+
+int int_icon(int val) {
+  return ICON_0 + val;
+}
+
+void gen_rects() {
+  for (int i = 0; i < GRID_X; i++)
+    for (int j = 0; j < GRID_Y; j++)
+      rects[j][i] = (Rectangle){(float)(i * ICON_WID + (i + 1) * ICON_GAP), 
+                                 (float)(j * ICON_HGT + (j + 1) * ICON_GAP), 
+                                 (float)ICON_WID, 
+                                 (float)ICON_HGT};
+}
+
+
+int lost_nums[] = {4, 8, 15, 16, 23, 42};
+void gen_grid() {
+  unsigned int seed = time(0);
+  unsigned int a = 1103515245;
+  unsigned int c = 12345;
+  unsigned int m = 6;
+  unsigned int random_number = (a * seed + c) % m;
+  for (int i = 1; i < GRID_X; i++)
+    for (int j = 1; j < GRID_Y - 1; j++) {
+      if (i == player_x || j == player_y)
+        continue;
+      grid[j][i] = ICON_NONE;
+      if (lost_nums[random_number] % 2 == 0)
+        grid[j][i] = ICON_BOMB;
+      random_number++;
+      if (random_number > m)
+        random_number = 0;
+    }      
+}
 
