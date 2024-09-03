@@ -12,6 +12,9 @@ int main(int argc, char *argv[])
     grid[GRID_Y - 2][0] = ICON_WATER_BOTTLE;
     grid[GRID_Y - 2][1] = ICON_EQUALS;
     grid[GRID_Y - 2][2] = ICON_W;
+    grid[2][3] = ICON_FLAG;
+    grid[5][4] = ICON_FLAG;
+    grid[1][5] = ICON_FLAG;
 
     while (!WindowShouldClose())
     {

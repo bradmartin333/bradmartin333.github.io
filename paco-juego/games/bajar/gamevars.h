@@ -20,6 +20,7 @@ enum Icon {
   ICON_3,
   ICON_W,
   ICON_EQUALS,
+  ICON_FLAG,
   ICON_MAX,
 };
 
@@ -35,6 +36,7 @@ int codepoints[ICON_MAX] = {
   0x33,
   0x57,
   0x3d,
+  0xf024,
 };
 
 Color icon_colors[ICON_MAX] = {
@@ -49,6 +51,7 @@ Color icon_colors[ICON_MAX] = {
   WHITE,
   BLUE,
   BLACK,
+  GREEN,
 };
 
 int grid[GRID_Y][GRID_X];
@@ -83,7 +86,7 @@ void gen_grid() {
   for (int i = 1; i < GRID_X; i++)
     for (int j = 1; j < GRID_Y - 1; j++) {
       grid[j][i] = ICON_NONE;
-      if (i == player_x || j == player_y)
+      if (grid[j][i] == ICON_FLAG || (i == player_x && j == player_y))
         continue;
       if (lost_nums[random_number] % 2 == 0)
         grid[j][i] = ICON_BOMB;
