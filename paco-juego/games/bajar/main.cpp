@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
                 for (int j = player_y - 1; j <= player_y + 1; j++) {
                     Rectangle r = rects[j][i];
                     if (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r)) {
+                        player_x = i;
+                        player_y = j;
                         int icon = grid[j][i];
                         if (icon == ICON_BOMB) {
                             hearts--;
@@ -36,8 +38,6 @@ int main(int argc, char *argv[])
                             //TODO win game
                             playing = false;
                         }
-                        player_x = i;
-                        player_y = j;
                     }
                 }                                
                     
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
                 playing = true;
             }
             waters--;
-            hearts = 3;
+            hearts = 2;
         }
         grid[1][0] = int_icon(hearts);
         grid[GRID_Y - 1][0] = int_icon(waters);

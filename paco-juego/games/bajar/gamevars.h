@@ -82,9 +82,9 @@ void gen_grid() {
   unsigned int random_number = (a * seed + c) % m;
   for (int i = 1; i < GRID_X; i++)
     for (int j = 1; j < GRID_Y - 1; j++) {
+      grid[j][i] = ICON_NONE;
       if (i == player_x || j == player_y)
         continue;
-      grid[j][i] = ICON_NONE;
       if (lost_nums[random_number] % 2 == 0)
         grid[j][i] = ICON_BOMB;
       random_number++;
