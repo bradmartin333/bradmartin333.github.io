@@ -61,6 +61,8 @@ int flags = 3;
 int waters = 3;
 int player_x = 5;
 int player_y = 0;
+int water_x = 0;
+int water_y = 4;
 bool playing = false;
 
 int lost_nums[] = {4, 8, 15, 16, 23, 42};

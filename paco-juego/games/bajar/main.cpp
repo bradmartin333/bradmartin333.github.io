@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     grid[0][0] = ICON_HEART;
     grid[2][0] = ICON_FLAG;
-    grid[4][0] = ICON_WATER_BOTTLE;
+    grid[water_y][water_x] = ICON_WATER_BOTTLE;
     grid[4][1] = ICON_EQUALS;
     grid[4][2] = ICON_W;
     grid[2][2] = ICON_FLAG;
@@ -24,48 +24,55 @@ int main(int argc, char *argv[])
         Vector2 touch = GetTouchPosition(0);
         Vector2 mouse = GetMousePosition();
 
-        if (playing && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || GetGestureDetected() == GESTURE_TAP))
-            for (int i = player_x - 1; i <= player_x + 1; i++)
-                for (int j = player_y - 1; j <= player_y + 1; j++) {
-                    Rectangle r = (Rectangle){(float)(i * ICON_WID + (i + 1) * ICON_GAP), 
-                                              (float)(j * ICON_HGT + (j + 1) * ICON_GAP), 
-                                              (float)ICON_WID, 
-                                              (float)ICON_HGT};
-                    if (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r)) {
-                        if (j == GRID_Y - 1) {
-                            if (flags != 0)
-                                continue;
-                            playing = false;
-                            //TODO win game
-                        }
-                        if (j == 0 && player_x > 0)
-                            continue;
-                        player_x = i;
-                        player_y = j;
-                        int icon = grid[j][i];
-                        if (icon == ICON_BOMB) {
-                            hearts--;
-                            if (hearts == 0) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || GetGestureDetected() == GESTURE_TAP) {
+            if (playing) {
+                for (int i = player_x - 1; i <= player_x + 1; i++)
+                    for (int j = player_y - 1; j <= player_y + 1; j++) {
+                        Rectangle r = (Rectangle){(float)(i * ICON_WID + (i + 1) * ICON_GAP), 
+                                                (float)(j * ICON_HGT + (j + 1) * ICON_GAP), 
+                                                (float)ICON_WID, 
+                                                (float)ICON_HGT};
+                        if (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r)) {
+                            if (j == GRID_Y - 1) {
+                                if (flags != 0)
+                                    continue;
                                 playing = false;
-                                //TODO lose game
+                                //TODO win game
                             }
-                            gen_grid();
+                            if (j == 0 && player_x > 0)
+                                continue;
+                            player_x = i;
+                            player_y = j;
+                            int icon = grid[j][i];
+                            if (icon == ICON_BOMB) {
+                                hearts--;
+                                if (hearts == 0) {
+                                    playing = false;
+                                    //TODO lose game
+                                }
+                                gen_grid();
+                            }
+                            if (icon == ICON_FLAG) {
+                                grid[j][i] = ICON_NONE;
+                                flags--;
+                                gen_grid();
+                            }
                         }
-                        if (icon == ICON_FLAG) {
-                            grid[j][i] = ICON_NONE;
-                            flags--;
-                            gen_grid();
-                        }
-                    }
-                }                                
-                    
-        if (IsKeyPressed(KEY_W) && waters > 0) {
-            if (waters == 3) {
-                gen_grid();
-                playing = true;
+                    }           
             }
-            waters--;
-            hearts = 2;
+
+            Rectangle r = (Rectangle){(float)(water_x * ICON_WID + (water_x + 1) * ICON_GAP), 
+                                     (float)(water_y * ICON_HGT + (water_y + 1) * ICON_GAP), 
+                                     (float)ICON_WID, 
+                                     (float)ICON_HGT};
+            if (waters > 0 && (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r))) {
+                if (waters == 3) {
+                    gen_grid();
+                    playing = true;
+                }
+                waters--;
+                hearts = 2;
+            }
         }
         
         grid[1][0] = ICON_0 + hearts;
