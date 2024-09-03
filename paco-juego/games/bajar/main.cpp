@@ -9,12 +9,13 @@ int main(int argc, char *argv[])
     gen_rects();
 
     grid[0][0] = ICON_HEART;
-    grid[GRID_Y - 2][0] = ICON_WATER_BOTTLE;
-    grid[GRID_Y - 2][1] = ICON_EQUALS;
-    grid[GRID_Y - 2][2] = ICON_W;
-    grid[2][3] = ICON_FLAG;
-    grid[5][4] = ICON_FLAG;
-    grid[1][5] = ICON_FLAG;
+    grid[2][0] = ICON_FLAG;
+    grid[4][0] = ICON_WATER_BOTTLE;
+    grid[4][1] = ICON_EQUALS;
+    grid[4][2] = ICON_W;
+    grid[2][2] = ICON_FLAG;
+    grid[4][4] = ICON_FLAG;
+    grid[3][6] = ICON_FLAG;
 
     while (!WindowShouldClose())
     {
@@ -29,31 +30,44 @@ int main(int argc, char *argv[])
                 for (int j = player_y - 1; j <= player_y + 1; j++) {
                     Rectangle r = rects[j][i];
                     if (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r)) {
+                        if (j == GRID_Y - 1) {
+                            if (flags != 0)
+                                continue;
+                            playing = false;
+                            //TODO win game
+                        }
                         player_x = i;
                         player_y = j;
                         int icon = grid[j][i];
                         if (icon == ICON_BOMB) {
                             hearts--;
+                            if (hearts == 0) {
+                                playing = false;
+                                //TODO lose game
+                            }
                             gen_grid();
-                            //TODO check game over
                         }
-                        if (j == GRID_Y - 1) {
-                            //TODO win game
-                            playing = false;
+                        if (icon == ICON_FLAG) {
+                            grid[j][i] = ICON_NONE;
+                            flags--;
+                            gen_grid();
                         }
                     }
                 }                                
                     
-        if (IsKeyPressed(KEY_W) && waters > 0) {
+        if (!started && IsKeyPressed(KEY_W) && waters > 0) {
             if (waters == 3) {
                 gen_grid();
+                started = true;
                 playing = true;
             }
             waters--;
             hearts = 2;
         }
+        
         grid[1][0] = int_icon(hearts);
-        grid[GRID_Y - 1][0] = int_icon(waters);
+        grid[3][0] = int_icon(flags);
+        grid[5][0] = int_icon(waters);
         
         DrawRectangle(0, 0, WID, ICON_HGT + 2 * ICON_GAP, SKYBLUE);
         DrawRectangle(0, HGT - ICON_HGT - 2 * ICON_GAP, WID, ICON_HGT + 2 * ICON_GAP, DARKGREEN);

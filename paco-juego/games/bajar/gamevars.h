@@ -57,9 +57,11 @@ Color icon_colors[ICON_MAX] = {
 int grid[GRID_Y][GRID_X];
 Rectangle rects[GRID_Y][GRID_X];
 int hearts = 0;
+int flags = 3;
 int waters = 3;
 int player_x = 5;
 int player_y = 0;
+bool started = false;
 bool playing = false;
 
 int int_icon(int val) {
@@ -85,8 +87,10 @@ void gen_grid() {
   unsigned int random_number = (a * seed + c) % m;
   for (int i = 1; i < GRID_X; i++)
     for (int j = 1; j < GRID_Y - 1; j++) {
+      if (grid[j][i] == ICON_FLAG)
+        continue;
       grid[j][i] = ICON_NONE;
-      if (grid[j][i] == ICON_FLAG || (i == player_x && j == player_y))
+      if (i == player_x && j == player_y)
         continue;
       if (lost_nums[random_number] % 2 == 0)
         grid[j][i] = ICON_BOMB;
