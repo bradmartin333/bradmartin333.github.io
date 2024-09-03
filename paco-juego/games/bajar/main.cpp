@@ -6,7 +6,6 @@ int main(int argc, char *argv[])
     InitWindow(WID, HGT, "game");
     SetTargetFPS(60);
     Font fa_solid = LoadFontEx("../include/fa-solid.ttf", ICON_HGT, codepoints, ICON_MAX);
-    gen_rects();
 
     grid[0][0] = ICON_HEART;
     grid[2][0] = ICON_FLAG;
@@ -28,7 +27,10 @@ int main(int argc, char *argv[])
         if (playing && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || GetGestureDetected() == GESTURE_TAP))
             for (int i = player_x - 1; i <= player_x + 1; i++)
                 for (int j = player_y - 1; j <= player_y + 1; j++) {
-                    Rectangle r = rects[j][i];
+                    Rectangle r = (Rectangle){(float)(i * ICON_WID + (i + 1) * ICON_GAP), 
+                                              (float)(j * ICON_HGT + (j + 1) * ICON_GAP), 
+                                              (float)ICON_WID, 
+                                              (float)ICON_HGT};
                     if (CheckCollisionPointRec(touch, r) || CheckCollisionPointRec(mouse, r)) {
                         if (j == GRID_Y - 1) {
                             if (flags != 0)
@@ -36,6 +38,8 @@ int main(int argc, char *argv[])
                             playing = false;
                             //TODO win game
                         }
+                        if (j == 0 && player_x > 0)
+                            continue;
                         player_x = i;
                         player_y = j;
                         int icon = grid[j][i];
@@ -55,19 +59,18 @@ int main(int argc, char *argv[])
                     }
                 }                                
                     
-        if (!started && IsKeyPressed(KEY_W) && waters > 0) {
+        if (IsKeyPressed(KEY_W) && waters > 0) {
             if (waters == 3) {
                 gen_grid();
-                started = true;
                 playing = true;
             }
             waters--;
             hearts = 2;
         }
         
-        grid[1][0] = int_icon(hearts);
-        grid[3][0] = int_icon(flags);
-        grid[5][0] = int_icon(waters);
+        grid[1][0] = ICON_0 + hearts;
+        grid[3][0] = ICON_0 + flags;
+        grid[5][0] = ICON_0 + waters;
         
         DrawRectangle(0, 0, WID, ICON_HGT + 2 * ICON_GAP, SKYBLUE);
         DrawRectangle(0, HGT - ICON_HGT - 2 * ICON_GAP, WID, ICON_HGT + 2 * ICON_GAP, DARKGREEN);

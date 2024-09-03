@@ -61,22 +61,7 @@ int flags = 3;
 int waters = 3;
 int player_x = 5;
 int player_y = 0;
-bool started = false;
 bool playing = false;
-
-int int_icon(int val) {
-  return ICON_0 + val;
-}
-
-void gen_rects() {
-  for (int i = 0; i < GRID_X; i++)
-    for (int j = 0; j < GRID_Y; j++)
-      rects[j][i] = (Rectangle){(float)(i * ICON_WID + (i + 1) * ICON_GAP), 
-                                 (float)(j * ICON_HGT + (j + 1) * ICON_GAP), 
-                                 (float)ICON_WID, 
-                                 (float)ICON_HGT};
-}
-
 
 int lost_nums[] = {4, 8, 15, 16, 23, 42};
 void gen_grid() {
