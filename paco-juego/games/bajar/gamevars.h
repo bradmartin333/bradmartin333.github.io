@@ -1,4 +1,6 @@
-#include <ctime>
+#include <raylib.h>
+
+#define NUM_RANDOM 6
 
 constexpr int WID = 320;
 constexpr int HGT = 240;
@@ -18,6 +20,7 @@ enum Icon {
   ICON_1,
   ICON_2,
   ICON_3,
+  ICON_4,
   ICON_W,
   ICON_EQUALS,
   ICON_FLAG,
@@ -34,6 +37,7 @@ int codepoints[ICON_MAX] = {
   0x31,
   0x32,
   0x33,
+  0x34,
   0x57,
   0x3d,
   0xf024,
@@ -49,6 +53,7 @@ Color icon_colors[ICON_MAX] = {
   WHITE,
   WHITE,
   WHITE,
+  WHITE,
   BLUE,
   BLACK,
   GREEN,
@@ -56,22 +61,21 @@ Color icon_colors[ICON_MAX] = {
 
 int grid[GRID_Y][GRID_X];
 Rectangle rects[GRID_Y][GRID_X];
-int hearts = 0;
-int flags = 3;
-int waters = 3;
+int hearts = 2;
+int flags = 4;
+int waters = 2;
 int player_x = 5;
 int player_y = 0;
-int water_x = 0;
-int water_y = 4;
-bool playing = false;
+constexpr int water_x = 0;
+constexpr int water_y = 4;
+Rectangle water_rect = (Rectangle){(float)(water_x * ICON_WID + (water_x + 1) * ICON_GAP), 
+                                   (float)(water_y * ICON_HGT + (water_y + 1) * ICON_GAP), 
+                                   (float)ICON_WID, 
+                                   (float)ICON_HGT};  
 
-int lost_nums[] = {4, 8, 15, 16, 23, 42};
+int lost_nums[NUM_RANDOM] = {4, 8, 15, 16, 23, 42};
 void gen_grid() {
-  unsigned int seed = time(0);
-  unsigned int a = 1103515245;
-  unsigned int c = 12345;
-  unsigned int m = 6;
-  unsigned int random_number = (a * seed + c) % m;
+  unsigned int random_number = GetRandomValue(0, NUM_RANDOM);
   for (int i = 1; i < GRID_X; i++)
     for (int j = 1; j < GRID_Y - 1; j++) {
       if (grid[j][i] == ICON_FLAG)
@@ -82,7 +86,7 @@ void gen_grid() {
       if (lost_nums[random_number] % 2 == 0)
         grid[j][i] = ICON_BOMB;
       random_number++;
-      if (random_number > m)
+      if (random_number > NUM_RANDOM)
         random_number = 0;
     }      
 }
