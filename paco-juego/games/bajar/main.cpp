@@ -2,12 +2,12 @@
 #include "gamevars.h"
 
 EM_JS(void, win, (), {
-  window.parent.location.href = '../../../pages/win_temp.html';
+  window.parent.location.href = '../../../pages/9JQQX.html';
   throw 'all done';
 });
 
 EM_JS(void, lose, (), {
-  window.parent.location.href = '../../../pages/lose_temp.html';
+  window.parent.location.href = '../../../pages/ZWHG7.html';
   throw 'all done';
 });
 
