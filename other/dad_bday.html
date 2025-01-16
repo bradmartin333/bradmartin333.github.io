@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ultimate Birthday Experience</title>
+    <style>
+        body {
+            background-color: black;
+            color: #0f0;
+            font-family: "Courier New", Courier, monospace;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 2px solid #0f0;
+            text-align: left;
+        }
+
+        #output {
+            /* Preserve line breaks */
+            white-space: pre-wrap;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        #prompt {
+            margin-right: 5px;
+        }
+
+        #user-input {
+            background-color: transparent;
+            border: none;
+            color: #0f0;
+            font-family: inherit;
+            width: auto;
+            outline: none;
+            flex-grow: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #0f0;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .welcome-line {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="output"></div>
+        <div class="input-line">
+            <span id="prompt"></span><input type="text" id="user-input" disabled>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const userInput = document.getElementById('user-input');
+        const prompt = document.getElementById('prompt');
+
+        const questions = [
+            {
+                text: `
+Please verify your identity by chosing your action for the following 3 scenarios.
+
+It is a lazy weekend and there isn't much of anything to do, so you decide to:
+1. Write a screenplay about how a man's quirky vocabulary gets him into unexpected situations.
+2. Gather the family to go sit in a Burnt Orange Nissan 350z with bucket seats.
+3. Put on a robe and listen to Ocean Waves, Wind, and Rain.
+
+`,
+                choices: 3,
+                answer: 2
+            },
+            {
+                text: `
+Your young son is very worked up about something insignificant:
+1. Pour a glass of water on his head.
+2. Change the topic to Avian Bird Flu.
+3. Silently walk away to get a Snickers.
+
+`,
+                choices: 3,
+                answer: 1
+            },
+            {
+                text: `
+It is a windy day and a long-awaited Air Hogs water rocket replacement arrives in the mail:
+1. Pack up the toy and head to a large field to play.
+2. Wait for a not-so windy day to play.
+3. Go in the backyard and renact the loss of the original rocket.
+
+`,
+                choices: 3,
+                answer: 3
+            }
+        ];
+
+        const finalMessage = `
+
+Hi pops - you are one funny guy. Whether we are on a walk or on the phone or on a road trip, I can always turn to you for honest advice or a thoughtful opinion. I am glad to have aquired that ability from you - in addition to the inclination to be nonsensically witty. Honestly, both have helped me be successful in my life and my career.
+
+I love you dad, see you soon - Brad
+`;
+
+        let answers = [];
+        let currentQuestion = 0;
+        let loadingText;
+
+        function typeText(text, callback) {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                output.innerHTML += text[i];
+                i++;
+                if (i >= text.length) {
+                    clearInterval(typingInterval);
+                    callback();
+                }
+            }, 20); // Adjust typing speed here
+        }
+
+        function askQuestion() {
+            if (currentQuestion === 0) {
+                // Add the styled welcome message only once at the beginning
+                output.innerHTML += `<div class="welcome-line">Welcome to the Ultimate Birthday Experience!</div>`;
+            }
+
+            typeText(questions[currentQuestion].text, () => {
+                prompt.textContent = '>';
+                userInput.disabled = false;
+                userInput.focus();
+            });
+        }
+
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const userChoice = parseInt(userInput.value);
+                if (userChoice >= 1 && userChoice <= questions[currentQuestion].choices) {
+                    answers.push(userChoice);
+                    userInput.value = '';
+                    userInput.disabled = true;
+                    prompt.textContent = ''; // Clear the prompt
+                    // output.innerHTML += '\n'; // REMOVE THIS LINE
+                    currentQuestion++;
+
+                    if (currentQuestion < questions.length) {
+                        askQuestion();
+                    } else {
+                        checkAnswers();
+                    }
+                } else {
+                    typeText('\nInvalid input. Please enter a number between 1 and ' + questions[currentQuestion].choices + '.\n', () => {
+                        userInput.value = '';
+                        userInput.focus();
+                    });
+                }
+            }
+        });
+
+        function checkAnswers() {
+            let accessGranted = true;
+            for (let i = 0; i < questions.length; i++) {
+                if (answers[i] !== questions[i].answer) {
+                    accessGranted = false;
+                    break;
+                }
+            }
+
+            if (accessGranted) {
+                typeText('\nAccess Granted\n', () => {
+                    showLoading();
+                });
+            } else {
+                typeText('\nAccess Denied\n', () => { });
+            }
+        }
+
+        function showLoading() {
+            loadingText = document.createElement('span');
+            loadingText.textContent = 'Loading';
+            output.appendChild(loadingText);
+
+            const spinner = document.createElement('div');
+            spinner.classList.add('spinner');
+            output.appendChild(spinner);
+
+            setTimeout(() => {
+                output.removeChild(spinner);
+                output.removeChild(loadingText); // Remove the "Loading" text
+                typeText(finalMessage, () => { });
+            }, 3000); // Loading time
+        }
+
+        askQuestion();
+    </script>
+</body>
+
+</html>
