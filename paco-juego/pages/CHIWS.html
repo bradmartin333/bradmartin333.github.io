@@ -92,7 +92,7 @@
                 if (score === 5) {
                     window.location.href = "8P244.html";
                 } else {
-                    playSound(beepA);
+                    beepA.play();
                 }
             } else {
                 score = 0;
@@ -106,16 +106,12 @@
                 if (score === 5) {
                     window.location.href = "8P244.html";
                 } else {
-                    playSound(beepB);
+                    beepB.play();
                 }
             } else {
                 score = 0;
             }
         });
-
-        function playSound(sound) {
-            sound.play();
-        }
     </script>
 </body>
 
