@@ -54,8 +54,8 @@
         const redBox = document.getElementById("red");
         const blueyellowBox = document.getElementById("blueyellow");
 
-        const beepA = new Audio("https://www.soundjay.com/buttons/button-7.mp3");
-        const beepB = new Audio("https://www.soundjay.com/buttons/button-09a.mp3");
+        const beepA = new Audio("../assets/beepA.mp3");
+        const beepB = new Audio("../assets/beepB.mp3");
 
         let counter = 0;
         let score = 0;
@@ -86,7 +86,7 @@
         }, 1000);
 
         redBox.addEventListener('click', function() {
-            if (myText.textContent === spanish) {
+            if (myText.textContent === spanish && clicked === 0) {
                 score++;
                 clicked = 1;
                 if (score === 5) {
@@ -94,11 +94,13 @@
                 } else {
                     playSound(beepA);
                 }
+            } else {
+                score = 0;
             }
         });
 
         blueyellowBox.addEventListener('click', function() {
-            if (myText.textContent === swedish) {
+            if (myText.textContent === swedish && clicked === 0) {
                 score++;
                 clicked = 1;
                 if (score === 5) {
@@ -106,6 +108,8 @@
                 } else {
                     playSound(beepB);
                 }
+            } else {
+                score = 0;
             }
         });
 
