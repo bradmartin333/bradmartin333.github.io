@@ -9,6 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../style.css" />
     <script type="text/javascript" src="../app.js"></script>
+    <style>
+        svg {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        svg:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+            filter: brightness(120%);
+        }
+    </style>
 </head>
 
 <body onload="loadCode()">
@@ -43,6 +54,9 @@
         const redBox = document.getElementById("red");
         const blueyellowBox = document.getElementById("blueyellow");
 
+        const beepA = new Audio("https://www.soundjay.com/buttons/button-7.mp3");
+        const beepB = new Audio("https://www.soundjay.com/buttons/button-09a.mp3");
+
         let counter = 0;
         let score = 0;
         let clicked = 0;
@@ -72,26 +86,32 @@
         }, 1000);
 
         redBox.addEventListener('click', function() {
-            console.log("red click");
             if (myText.textContent === spanish) {
                 score++;
                 clicked = 1;
                 if (score === 5) {
                     window.location.href = "8P244.html";
+                } else {
+                    playSound(beepA);
                 }
             }
         });
 
         blueyellowBox.addEventListener('click', function() {
-            console.log("blueyellow click");
             if (myText.textContent === swedish) {
                 score++;
                 clicked = 1;
                 if (score === 5) {
-                    console.log("WIN");
+                    window.location.href = "8P244.html";
+                } else {
+                    playSound(beepB);
                 }
             }
         });
+
+        function playSound(sound) {
+            sound.play();
+        }
     </script>
 </body>
 
