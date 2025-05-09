@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Mother's Day!</title>
+    <style>
+        body {
+            background-color: #1a011a;
+            color: #ff69b4;
+            font-family: "Georgia", serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ff69b4;
+            text-align: left;
+            box-shadow: 0 0 15px #ff69b4;
+            border-radius: 10px;
+            background-color: #2b022b;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 10px;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        #prompt {
+            margin-right: 5px;
+            color: #ffff00;
+        }
+
+        #user-input {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            width: auto;
+            outline: none;
+            flex-grow: 1;
+            caret-color: #ffffff;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #ff69b4;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .welcome-line {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 20px;
+            color: #ff93f6;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .welcome-line {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="output"></div>
+        <div class="input-line">
+            <span id="prompt"></span><input type="text" id="user-input" disabled>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const userInput = document.getElementById('user-input');
+        const prompt = document.getElementById('prompt');
+
+        const questions = [
+            {
+                text: `
+Please verify your identity by answering these questions.
+
+What is your favorite breakfast food?
+1. Yogurt and granola
+2. Eggs Benedict
+3. Chocolate cake
+
+`,
+                choices: 3,
+                answer: 3
+            },
+            {
+                text: `
+What is the best way to address a dog?
+1. "Hi pup"
+2. "Ooooohhh schmoogaleee dooogalieeee"
+3. "Sit!"
+
+`,
+                choices: 3,
+                answer: 2
+            },
+            {
+                text: `
+Which is a very real medical condition?
+1. Snackitis
+2. Cold bone syndrome
+3. Elbow grease
+
+`,
+                choices: 3,
+                answer: 2 
+            }
+        ];
+
+        const finalMessage = `
+
+Happy Mother's Day, Mom!
+
+You are the best mom anyone could ask for. Thank you for your endless love, support, and wisdom. Every day with you is a gift.
+
+Love you always,
+Sweet Baboo
+`;
+
+        let answers = [];
+        let currentQuestion = 0;
+        let loadingTextSpan; // Use a span element for loading text
+        let spinnerElement; // Use a variable for the spinner element
+
+        // Function to type text character by character
+        function typeText(text, callback) {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                // Append text character by character
+                output.innerHTML += text[i];
+                // Scroll to the bottom of the output div
+                output.scrollTop = output.scrollHeight;
+                i++;
+                if (i >= text.length) {
+                    clearInterval(typingInterval);
+                    if (callback) {
+                        callback();
+                    }
+                }
+            }, 30); // Adjust typing speed here (milliseconds per character)
+        }
+
+        // Function to ask the current question
+        function askQuestion() {
+            if (currentQuestion === 0) {
+                // Add the styled welcome message only once at the beginning
+                output.innerHTML += `<div class="welcome-line">Happy Mother's Day!</div>`;
+            }
+
+            typeText(questions[currentQuestion].text, () => {
+                prompt.textContent = '>'; // Show the prompt
+                userInput.disabled = false; // Enable user input
+                userInput.focus(); // Focus the input field
+            });
+        }
+
+        // Event listener for user input (when Enter is pressed)
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const userChoice = parseInt(userInput.value.trim()); // Get input and trim whitespace
+                const currentQ = questions[currentQuestion];
+
+                // Check if the input is a valid number within the choices range
+                if (!isNaN(userChoice) && userChoice >= 1 && userChoice <= currentQ.choices) {
+                    // Display the user's input in the output area
+                    output.innerHTML += `${prompt.textContent}${userInput.value}\n`;
+
+                    answers.push(userChoice); // Store the answer
+                    userInput.value = ''; // Clear the input field
+                    userInput.disabled = true; // Disable input while processing
+                    prompt.textContent = ''; // Clear the prompt
+
+                    currentQuestion++; // Move to the next question
+
+                    if (currentQuestion < questions.length) {
+                        askQuestion(); // Ask the next question
+                    } else {
+                        checkAnswers(); // If all questions answered, check them
+                    }
+                } else {
+                    // Handle invalid input
+                    typeText('\nInvalid input. Please enter a number between 1 and ' + currentQ.choices + '.\n', () => {
+                        userInput.value = ''; // Clear invalid input
+                        userInput.focus(); // Refocus the input field
+                    });
+                }
+            }
+        });
+
+        // Function to check if the answers are correct
+        function checkAnswers() {
+            let accessGranted = true;
+            for (let i = 0; i < questions.length; i++) {
+                if (answers[i] !== questions[i].answer) {
+                    accessGranted = false;
+                    break; // Stop checking if any answer is wrong
+                }
+            }
+
+            if (accessGranted) {
+                typeText('\nAccess Granted\n', () => {
+                    showLoading(); // Show loading animation
+                });
+            } else {
+                typeText('\nAccess Denied\n', () => {
+                    // Optionally, you could reset or provide a hint here
+                });
+            }
+        }
+
+        // Function to show the loading animation and then the final message
+        function showLoading() {
+            loadingTextSpan = document.createElement('span');
+            loadingTextSpan.textContent = 'Loading';
+            output.appendChild(loadingTextSpan);
+
+            spinnerElement = document.createElement('div');
+            spinnerElement.classList.add('spinner');
+            output.appendChild(spinnerElement);
+
+            // Simulate a loading time
+            setTimeout(() => {
+                // Remove loading elements
+                if (spinnerElement && spinnerElement.parentNode) {
+                    output.removeChild(spinnerElement);
+                }
+                if (loadingTextSpan && loadingTextSpan.parentNode) {
+                    output.removeChild(loadingTextSpan);
+                }
+
+
+                typeText(finalMessage, () => {
+                    // After final message, you could potentially add more here
+                });
+            }, 3000); // 3 second loading time
+        }
+
+        // Start the process by asking the first question
+        askQuestion();
+    </script>
+</body>
+
+</html>
