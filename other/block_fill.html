@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Fill Puzzle</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
+            color: #2d3748; /* Dark text */
+        }
+        .container {
+            max-width: 90%;
+            width: 100%;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid-container {
+            display: grid;
+            border: 2px solid #cbd5e0; /* Light gray border for the grid */
+            border-radius: 0.5rem;
+            overflow: hidden; /* Ensures rounded corners on inner cells */
+            margin-top: 1rem;
+        }
+        .grid-cell {
+            width: 40px; /* Default cell size */
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #edf2f7; /* Light background for empty cells */
+            border: 1px solid #e2e8f0; /* Subtle cell borders */
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+            user-select: none; /* Prevent text selection */
+        }
+
+        /* Editor Mode Cell Styles */
+        .editor-mode .grid-cell:hover {
+            transform: scale(1.05);
+            border-color: #a0aec0; /* Darker border on hover */
+        }
+        .editor-mode .grid-cell.blocked {
+            background-color: #4a5568; /* Darker for blocked cells */
+        }
+        .editor-mode .grid-cell.start {
+            background-color: #ecc94b; /* Yellow for start cell */
+            font-weight: bold;
+            color: #333;
+        }
+        .editor-mode .grid-cell.start::after {
+            content: 'S';
+            font-size: 1.2rem;
+        }
+
+        /* Player Mode Cell Styles */
+        .player-mode .grid-cell.blocked {
+            background-color: #4a5568; /* Darker for blocked cells */
+            cursor: not-allowed;
+        }
+        .player-mode .grid-cell.start {
+            background-color: #ecc94b; /* Yellow for start cell */
+            font-weight: bold;
+            color: #333;
+        }
+        .player-mode .grid-cell.start::after {
+            content: 'S';
+            font-size: 1.2rem;
+        }
+        .player-mode .grid-cell.filled {
+            background-color: #63b3ed; /* Blue for filled cells */
+            border-color: #4299e1;
+        }
+        .player-mode .grid-cell.current-path {
+            background-color: #9f7aea; /* Purple for the current path */
+            border-color: #805ad5;
+        }
+        .player-mode .grid-cell.current-position {
+            background-color: #f6ad55; /* Orange for current position */
+            border-color: #ed8936;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments for cell size */
+        @media (max-width: 768px) {
+            .grid-cell {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-cell {
+                width: 25px;
+                height: 25px;
+            }
+            .container {
+                padding: 1rem;
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Modal specific styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-start justify-center min-h-screen">
+    <div id="app" class="container">
+        <h1 class="text-4xl font-extrabold mb-6 text-indigo-700">Block Fill Puzzle</h1>
+
+        <!-- Mode display -->
+        <div class="mb-6 px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full shadow-md text-lg font-semibold">
+            <span id="mode-display"></span>
+        </div>
+
+        <!-- Editor Mode UI -->
+        <div id="editor-mode-ui" class="w-full flex flex-col items-center hidden">
+            <p class="text-lg mb-4 text-gray-700">
+                Design your puzzle:
+                <br>Click a cell to toggle between empty and blocked.
+                <br>Right-click (or Ctrl+Click) a cell to set it as the starting point.
+            </p>
+            <div class="flex flex-wrap justify-center items-center gap-4 mb-6">
+                <div class="flex items-center gap-2">
+                    <label for="rows" class="font-medium text-gray-700">Rows:</label>
+                    <input type="number" id="rows" value="5" min="3" max="15" class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="cols" class="font-medium text-gray-700">Columns:</label>
+                    <input type="number" id="cols" value="5" min="3" max="15" class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button id="create-grid-btn" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                    Create New Grid
+                </button>
+            </div>
+
+            <div id="editor-grid-container" class="grid-container editor-mode mb-6">
+                <!-- Grid cells will be dynamically inserted here -->
+            </div>
+
+            <button id="play-puzzle-btn" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg shadow-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out text-lg">
+                Play This Puzzle
+            </button>
+        </div>
+
+        <!-- Player Mode UI -->
+        <div id="player-mode-ui" class="w-full flex flex-col items-center hidden">
+            <p class="text-lg mb-4 text-gray-700">
+                Tap or click an adjacent empty cell to move. Fill all empty blocks!
+            </p>
+            <div id="player-grid-container" class="grid-container player-mode mb-6">
+                <!-- Grid cells will be dynamically inserted here -->
+            </div>
+            <div id="game-status" class="text-xl font-bold mt-4 mb-6 text-gray-800"></div>
+            <div class="flex flex-wrap justify-center items-center gap-4">
+                <button id="reset-game-btn" class="px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                    Reset Puzzle
+                </button>
+                <button id="edit-puzzle-btn" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                    Edit Puzzle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Messages -->
+    <div id="custom-modal" class="modal">
+        <div class="modal-content flex flex-col items-center">
+            <h2 id="modal-title" class="text-2xl font-bold mb-4 text-gray-800"></h2>
+            <p id="modal-message" class="text-lg text-gray-700 mb-6 text-center"></p>
+            <button id="modal-close-btn" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const appDiv = document.getElementById('app');
+        const modeDisplay = document.getElementById('mode-display');
+
+        // Editor Mode Elements
+        const editorModeUi = document.getElementById('editor-mode-ui');
+        const rowsInput = document.getElementById('rows');
+        const colsInput = document.getElementById('cols');
+        const createGridBtn = document.getElementById('create-grid-btn');
+        const editorGridContainer = document.getElementById('editor-grid-container');
+        const playPuzzleBtn = document.getElementById('play-puzzle-btn'); // New button
+
+        // Player Mode Elements
+        const playerModeUi = document.getElementById('player-mode-ui');
+        const playerGridContainer = document.getElementById('player-grid-container');
+        const gameStatus = document.getElementById('game-status');
+        const resetGameBtn = document.getElementById('reset-game-btn');
+        const editPuzzleBtn = document.getElementById('edit-puzzle-btn'); // Renamed/repurposed button
+
+        // Modal Elements
+        const customModal = document.getElementById('custom-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        // --- Game State Variables ---
+        let currentGrid = []; // Stores the grid configuration (type: 'empty', 'blocked', 'start')
+        let numRows, numCols;
+        let startCell = null; // {row, col} for the starting position
+        let path = []; // Stores the sequence of cells visited in Player Mode
+        let currentPlayerPosition = null; // {row, col} current position in Player Mode
+
+        // --- Helper Functions ---
+
+        /**
+         * Displays a custom modal message instead of alert().
+         * @param {string} title - The title of the modal.
+         * @param {string} message - The message to display.
+         */
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            customModal.style.display = 'flex';
+        }
+
+        /** Closes the custom modal. */
+        function closeModal() {
+            customModal.style.display = 'none';
+        }
+
+        /**
+         * Renders the grid visually in the specified container based on the currentGrid state.
+         * @param {HTMLElement} container - The DOM element to render the grid into.
+         * @param {string} mode - 'editor' or 'player'.
+         */
+        function renderGrid(container, mode) {
+            container.innerHTML = ''; // Clear previous grid
+            container.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
+
+            for (let r = 0; r < numRows; r++) {
+                for (let c = 0; c < numCols; c++) {
+                    const cellData = currentGrid[r][c];
+                    const cellDiv = document.createElement('div');
+                    cellDiv.classList.add('grid-cell', 'rounded-sm');
+                    cellDiv.dataset.row = r;
+                    cellDiv.dataset.col = c;
+
+                    // Apply base cell styles based on type
+                    if (cellData.type === 'blocked') {
+                        cellDiv.classList.add('blocked');
+                    } else if (cellData.type === 'start') {
+                        cellDiv.classList.add('start');
+                    }
+
+                    // Apply mode-specific styles and event listeners
+                    if (mode === 'editor') {
+                        cellDiv.addEventListener('click', (event) => toggleCellType(r, c, event));
+                        cellDiv.addEventListener('contextmenu', (event) => setStartCell(r, c, event)); // Right-click for start
+                    } else if (mode === 'player') {
+                        if (cellData.state === 'filled') {
+                            cellDiv.classList.add('filled');
+                        }
+                        if (cellData.state === 'current-path') {
+                            cellDiv.classList.add('current-path');
+                        }
+                        if (cellData.state === 'current-position') {
+                            cellDiv.classList.add('current-position');
+                        }
+                        cellDiv.addEventListener('click', () => handlePlayerMove(r, c));
+                    }
+                    container.appendChild(cellDiv);
+                }
+            }
+        }
+
+        /**
+         * Creates a new grid with specified dimensions (called from Editor Mode "Create New Grid" button).
+         * This re-initializes the currentGrid and startCell.
+         */
+        function createNewGrid() {
+            numRows = parseInt(rowsInput.value);
+            numCols = parseInt(colsInput.value);
+
+            currentGrid = Array(numRows).fill(0).map(() =>
+                Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled' }))
+            );
+            startCell = null; // Reset start cell
+
+            renderGrid(editorGridContainer, 'editor');
+            updateUrlWithGrid(); // Update URL to reflect the new empty grid
+        }
+
+        /**
+         * Toggles a cell's type between 'empty' and 'blocked' in editor mode.
+         * @param {number} r - Row index.
+         * @param {number} c - Column index.
+         * @param {Event} event - The click event.
+         */
+        function toggleCellType(r, c, event) {
+            // Prevent right-click from also toggling
+            if (event.button === 2 || event.ctrlKey) {
+                return;
+            }
+
+            const cell = currentGrid[r][c];
+            if (cell.type === 'start') {
+                // If it's a start cell, clicking it turns it to empty and clears startCell
+                cell.type = 'empty';
+                startCell = null;
+            } else if (cell.type === 'empty') {
+                cell.type = 'blocked';
+            } else { // 'blocked'
+                cell.type = 'empty';
+            }
+            renderGrid(editorGridContainer, 'editor');
+            updateUrlWithGrid(); // Update URL after cell change
+        }
+
+        /**
+         * Sets a cell as the starting point in editor mode.
+         * @param {number} r - Row index.
+         * @param {number} c - Column index.
+         * @param {Event} event - The click event.
+         */
+        function setStartCell(r, c, event) {
+            event.preventDefault(); // Prevent context menu from appearing on right-click
+
+            const cell = currentGrid[r][c];
+            if (cell.type === 'blocked') {
+                showModal('Cannot Set Start', 'Blocked cells cannot be a starting point.');
+                return;
+            }
+
+            // Clear previous start cell if exists
+            if (startCell) {
+                currentGrid[startCell.row][startCell.col].type = 'empty';
+            }
+
+            // Set new start cell
+            cell.type = 'start';
+            startCell = { row: r, col: c };
+            renderGrid(editorGridContainer, 'editor');
+            updateUrlWithGrid(); // Update URL after start cell change
+        }
+
+        /**
+         * Updates the browser's URL with the current grid configuration.
+         * This allows sharing the URL directly and persists the state.
+         */
+        function updateUrlWithGrid() {
+            // Only include 'type' in the grid for encoding, remove 'state'
+            const cleanGrid = currentGrid.map(row => row.map(cell => ({ type: cell.type })));
+            const gridConfig = {
+                rows: numRows,
+                cols: numCols,
+                grid: cleanGrid,
+                start: startCell // startCell can be null if not set in editor
+            };
+            const encodedConfig = btoa(JSON.stringify(gridConfig));
+            const newUrl = `${window.location.origin}${window.location.pathname}?grid=${encodedConfig}`;
+            window.history.pushState(gridConfig, '', newUrl); // Use pushState to avoid page reload
+        }
+
+        // --- Player Mode Functions ---
+
+        /**
+         * Initializes the game in player mode based on the loaded grid.
+         * @param {object} gridConfig - The grid configuration to load.
+         */
+        function initializePlayerGame(gridConfig) {
+            numRows = gridConfig.rows;
+            numCols = gridConfig.cols;
+            currentGrid = gridConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+            startCell = gridConfig.start;
+
+            if (!startCell) {
+                // This scenario should ideally be caught before entering player mode
+                // but as a fallback, show an error and return to editor
+                showModal('Puzzle Error', 'No starting cell found for this puzzle. Returning to editor mode.');
+                setEditorMode({ rows: numRows, cols: numCols, grid: currentGrid, start: null });
+                return;
+            }
+
+            // Mark the start cell and set initial player position
+            currentGrid[startCell.row][startCell.col].state = 'current-position';
+            currentPlayerPosition = { ...startCell };
+            path = [{ ...startCell }]; // Path starts with the starting cell
+
+            renderGrid(playerGridContainer, 'player');
+            updateGameStatus();
+        }
+
+        /**
+         * Handles a player's move.
+         * @param {number} r - Row index of the target cell.
+         * @param {number} c - Column index of the target cell.
+         */
+        function handlePlayerMove(r, c) {
+            const targetCell = currentGrid[r][c];
+
+            // Invalid move conditions
+            if (targetCell.type === 'blocked') {
+                showModal('Invalid Move', 'Cannot move into a blocked cell.');
+                return;
+            }
+            // Check if the target cell is already part of the path (excluding current position)
+            if (path.some(p => p.row === r && p.col === c)) {
+                 showModal('Invalid Move', 'Cannot move into an already visited cell.');
+                 return;
+            }
+            if (!isAdjacent(currentPlayerPosition.row, currentPlayerPosition.col, r, c)) {
+                showModal('Invalid Move', 'You can only move to an adjacent cell (up, down, left, right).');
+                return;
+            }
+
+            // Update previous current position's state
+            const prevCell = currentGrid[currentPlayerPosition.row][currentPlayerPosition.col];
+            // The start cell type is 'start', but its state reflects it's now part of the path
+            prevCell.state = 'filled';
+
+
+            // Update target cell to 'current-position'
+            targetCell.state = 'current-position';
+            currentPlayerPosition = { row: r, col: c };
+            path.push({ row: r, col: c });
+
+            renderGrid(playerGridContainer, 'player');
+            checkGameEnd();
+        }
+
+        /**
+         * Checks if two cells are adjacent (horizontally or vertically).
+         * @param {number} r1 - Row of first cell.
+         * @param {number} c1 - Column of first cell.
+         * @param {number} r2 - Row of second cell.
+         * @param {number} c2 - Column of second cell.
+         * @returns {boolean} - True if adjacent, false otherwise.
+         */
+        function isAdjacent(r1, c1, r2, c2) {
+            const dr = Math.abs(r1 - r2);
+            const dc = Math.abs(c1 - c2);
+            return (dr === 1 && dc === 0) || (dr === 0 && dc === 1);
+        }
+
+        /** Checks for win/loss conditions and updates game status. */
+        function checkGameEnd() {
+            const totalPlayableCells = currentGrid.flat().filter(cell => cell.type !== 'blocked').length;
+            const filledCells = path.length;
+
+            if (filledCells === totalPlayableCells) {
+                gameStatus.textContent = 'Congratulations! You filled all blocks!';
+                gameStatus.classList.remove('text-red-600', 'text-gray-800');
+                gameStatus.classList.add('text-green-600');
+                // Disable further moves
+                playerGridContainer.style.pointerEvents = 'none';
+            } else if (!hasValidMoves()) {
+                gameStatus.textContent = 'Game Over! No more moves available.';
+                gameStatus.classList.remove('text-green-600', 'text-gray-800');
+                gameStatus.classList.add('text-red-600');
+                // Disable further moves
+                playerGridContainer.style.pointerEvents = 'none';
+            } else {
+                updateGameStatus();
+            }
+        }
+
+        /** Updates the game status display with current progress. */
+        function updateGameStatus() {
+            const totalPlayableCells = currentGrid.flat().filter(cell => cell.type !== 'blocked').length;
+            const filledCells = path.length;
+            gameStatus.textContent = `Blocks filled: ${filledCells} / ${totalPlayableCells}`;
+            gameStatus.classList.remove('text-green-600', 'text-red-600'); // Clear previous status colors
+            gameStatus.classList.add('text-gray-800');
+            playerGridContainer.style.pointerEvents = 'auto'; // Ensure grid is interactive
+        }
+
+        /**
+         * Checks if there are any valid moves from the current player position.
+         * @returns {boolean} - True if valid moves exist, false otherwise.
+         */
+        function hasValidMoves() {
+            const { row, col } = currentPlayerPosition;
+            const possibleMoves = [
+                { r: row - 1, c: col }, // Up
+                { r: row + 1, c: col }, // Down
+                { r: row, c: col - 1 }, // Left
+                { r: row, c: col + 1 }  // Right
+            ];
+
+            for (const move of possibleMoves) {
+                const { r, c } = move;
+                // Check bounds
+                if (r >= 0 && r < numRows && c >= 0 && c < numCols) {
+                    const cell = currentGrid[r][c];
+                    // Valid if not blocked and not already visited
+                    if (cell.type !== 'blocked' && !path.some(p => p.row === r && p.col === c)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /** Resets the current game to its initial state. */
+        function resetGame() {
+            // Re-initialize player game using the original grid config from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedGrid = urlParams.get('grid');
+            if (encodedGrid) {
+                try {
+                    const decodedConfig = JSON.parse(atob(encodedGrid));
+                    initializePlayerGame(decodedConfig);
+                } catch (e) {
+                    console.error('Error decoding grid config from URL for reset:', e);
+                    showModal('Reset Error', 'Could not reset puzzle from URL. Returning to editor mode.');
+                    setEditorMode();
+                }
+            } else {
+                // Should not happen if URL is always updated, but as a fallback:
+                setPlayerMode(generateDefaultGridConfig());
+            }
+        }
+
+        // --- View Management Functions ---
+
+        /**
+         * Sets the UI to editor mode, optionally loading a grid config for editing.
+         * @param {object} [configToEdit=null] - The grid configuration to pre-fill the editor with.
+         */
+        function setEditorMode(configToEdit = null) {
+            editorModeUi.classList.remove('hidden');
+            playerModeUi.classList.add('hidden');
+            modeDisplay.textContent = 'Editor Mode';
+
+            if (configToEdit) {
+                // Load existing config into editor
+                numRows = configToEdit.rows;
+                colsInput.value = configToEdit.cols;
+                rowsInput.value = configToEdit.rows;
+                numCols = configToEdit.cols;
+                // Deep copy grid to ensure editor changes don't affect player state directly before 'Play This Puzzle'
+                currentGrid = configToEdit.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+                startCell = configToEdit.start;
+            } else {
+                // No config provided, create a fresh default grid for editing
+                numRows = parseInt(rowsInput.value);
+                numCols = parseInt(colsInput.value);
+                currentGrid = Array(numRows).fill(0).map(() =>
+                    Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled' }))
+                );
+                startCell = null;
+            }
+            renderGrid(editorGridContainer, 'editor');
+            updateUrlWithGrid(); // Ensure URL reflects current editor state
+        }
+
+        /**
+         * Sets the UI to player mode, either loading from URL or a provided config.
+         * @param {object} [configToPlay=null] - The grid configuration to play. If null, attempts to load from URL.
+         */
+        function setPlayerMode(configToPlay = null) {
+            editorModeUi.classList.add('hidden');
+            playerModeUi.classList.remove('hidden');
+            modeDisplay.textContent = 'Player Mode';
+
+            if (configToPlay) {
+                initializePlayerGame(configToPlay);
+                updateUrlWithGrid(); // Update URL to match the played config
+            } else {
+                // Try to load from URL, or use default if no URL config
+                const urlParams = new URLSearchParams(window.location.search);
+                const encodedGrid = urlParams.get('grid');
+
+                if (encodedGrid) {
+                    try {
+                        const decodedConfig = JSON.parse(atob(encodedGrid));
+                        initializePlayerGame(decodedConfig);
+                    } catch (e) {
+                        console.error('Error decoding grid config from URL during player mode entry:', e);
+                        showModal('Puzzle Load Error', 'Could not load puzzle from URL. Starting with a default puzzle.');
+                        const defaultGrid = generateDefaultGridConfig();
+                        initializePlayerGame(defaultGrid);
+                        updateUrlWithGrid(); // Update URL with the default grid
+                    }
+                } else {
+                    const defaultGrid = generateDefaultGridConfig();
+                    initializePlayerGame(defaultGrid);
+                    updateUrlWithGrid(); // Update URL with the default grid
+                }
+            }
+        }
+
+        /**
+         * Generates a default 5x5 grid configuration.
+         * @returns {object} - A default grid configuration.
+         */
+        function generateDefaultGridConfig() {
+            const defaultRows = 5;
+            const defaultCols = 5;
+            const defaultGrid = Array(defaultRows).fill(0).map(() =>
+                Array(defaultCols).fill(0).map(() => ({ type: 'empty' }))
+            );
+            // Set a default start cell (e.g., top-left)
+            defaultGrid[0][0].type = 'start';
+            return {
+                rows: defaultRows,
+                cols: defaultCols,
+                grid: defaultGrid,
+                start: { row: 0, col: 0 }
+            };
+        }
+
+
+        // --- Event Listeners ---
+        createGridBtn.addEventListener('click', createNewGrid);
+        resetGameBtn.addEventListener('click', resetGame);
+        editPuzzleBtn.addEventListener('click', () => {
+            // Pass the current player grid configuration to the editor for modification
+            const currentConfig = {
+                rows: numRows,
+                cols: numCols,
+                grid: currentGrid.map(row => row.map(cell => ({ type: cell.type }))),
+                start: startCell
+            };
+            setEditorMode(currentConfig);
+        });
+        playPuzzleBtn.addEventListener('click', () => {
+            if (!startCell) {
+                showModal('Missing Start Cell', 'Please set a starting cell for your puzzle (Right-click or Ctrl+Click a cell) before playing.');
+                return;
+            }
+            // Switch to player mode using the current editor's state
+            const currentEditorConfig = {
+                rows: numRows,
+                cols: numCols,
+                grid: currentGrid.map(row => row.map(cell => ({ type: cell.type }))),
+                start: startCell
+            };
+            setPlayerMode(currentEditorConfig);
+        });
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        // --- Initial Load Logic ---
+        window.addEventListener('load', () => {
+            // Always attempt to enter player mode on load, it will handle loading from URL or default
+            setPlayerMode();
+        });
+
+        // Handle browser's back/forward buttons
+        window.addEventListener('popstate', (event) => {
+            // When popstate fires, the URL has already changed.
+            // Re-evaluate the URL and set mode accordingly.
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedGrid = urlParams.get('grid');
+
+            if (encodedGrid) {
+                try {
+                    const decodedConfig = JSON.parse(atob(encodedGrid));
+                    // Ensure we update currentGrid/startCell before setting player mode
+                    numRows = decodedConfig.rows;
+                    numCols = decodedConfig.cols;
+                    currentGrid = decodedConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+                    startCell = decodedConfig.start;
+                    setPlayerMode(decodedConfig); // Re-initialize player mode with the new state
+                } catch (e) {
+                    console.error('Error decoding grid config from URL on popstate:', e);
+                    showModal('Navigation Error', 'Could not load puzzle from previous state. Starting with a default puzzle.');
+                    setPlayerMode(generateDefaultGridConfig());
+                }
+            } else {
+                // If no grid in URL (e.g., went back to base URL), show editor with a default state
+                 setPlayerMode(generateDefaultGridConfig());
+            }
+        });
+    </script>
+</body>
+</html>
