@@ -39,6 +39,7 @@
             margin-top: 1rem;
         }
         .grid-cell {
+            position: relative; /* Needed for ::after pseudo-element positioning */
             width: 40px; /* Default cell size */
             height: 40px;
             display: flex;
@@ -97,11 +98,46 @@
             transform: scale(1.1);
         }
 
+        /* Path Direction Indicators (Applies to filled and current-position cells, but not the start cell itself) */
+        .player-mode .grid-cell.filled::after,
+        .player-mode .grid-cell.current-position::after {
+            position: absolute;
+            font-size: 1.5rem; /* Larger arrow */
+            color: rgba(255, 255, 255, 0.7); /* White with transparency */
+            line-height: 1; /* Ensure vertical centering */
+            pointer-events: none; /* Do not interfere with mouse events */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Soft shadow for readability */
+            font-weight: bold;
+        }
+
+        .player-mode .grid-cell.entered-from-up::after { content: '↓'; }
+        .player-mode .grid-cell.entered-from-down::after { content: '↑'; }
+        .player-mode .grid-cell.entered-from-left::after { content: '→'; }
+        .player-mode .grid-cell.entered-from-right::after { content: '←'; }
+
+        /* Ensure start cell 'S' is on top of path arrow if it's the current position */
+        .player-mode .grid-cell.start.current-position::after {
+            content: 'S';
+            z-index: 2; /* Bring 'S' to front */
+            color: #333; /* Darker color for 'S' */
+            text-shadow: none;
+            font-size: 1.2rem;
+        }
+        /* Make sure the path arrow is still visible *under* the S if it's a start cell and filled */
+        .player-mode .grid-cell.start.filled::after {
+             color: rgba(255, 255, 255, 0.7); /* Reset color for arrow */
+        }
+
+
         /* Responsive adjustments for cell size */
         @media (max-width: 768px) {
             .grid-cell {
                 width: 30px;
                 height: 30px;
+            }
+            .player-mode .grid-cell.filled::after,
+            .player-mode .grid-cell.current-position::after {
+                font-size: 1rem;
             }
         }
         @media (max-width: 480px) {
@@ -113,6 +149,10 @@
                 padding: 1rem;
                 margin-top: 1rem;
                 margin-bottom: 1rem;
+            }
+            .player-mode .grid-cell.filled::after,
+            .player-mode .grid-cell.current-position::after {
+                font-size: 0.9rem;
             }
         }
 
@@ -243,11 +283,13 @@
         const modalCloseBtn = document.getElementById('modal-close-btn');
 
         // --- Game State Variables ---
-        let currentGrid = []; // Stores the grid configuration (type: 'empty', 'blocked', 'start')
+        // `currentGrid` now includes `directionEntered` for path visualization
+        let currentGrid = []; // Stores the grid configuration (type: 'empty', 'blocked', 'start', directionEntered: null | 'up' | 'down' | 'left' | 'right')
         let numRows, numCols;
         let startCell = null; // {row, col} for the starting position
         let path = []; // Stores the sequence of cells visited in Player Mode
         let currentPlayerPosition = null; // {row, col} current position in Player Mode
+        let isDragging = false; // State for click-and-drag functionality
 
         // --- Helper Functions ---
 
@@ -296,16 +338,29 @@
                         cellDiv.addEventListener('click', (event) => toggleCellType(r, c, event));
                         cellDiv.addEventListener('contextmenu', (event) => setStartCell(r, c, event)); // Right-click for start
                     } else if (mode === 'player') {
+                        // Apply player-specific state classes
                         if (cellData.state === 'filled') {
                             cellDiv.classList.add('filled');
-                        }
-                        if (cellData.state === 'current-path') {
-                            cellDiv.classList.add('current-path');
                         }
                         if (cellData.state === 'current-position') {
                             cellDiv.classList.add('current-position');
                         }
+
+                        // Add direction class if available and not the start cell
+                        if (cellData.directionEntered && !(cellData.type === 'start' && cellData.state === 'current-position')) {
+                            cellDiv.classList.add(`entered-from-${cellData.directionEntered}`);
+                        }
+
+
+                        // Original click handler for single clicks (now also part of drag start)
                         cellDiv.addEventListener('click', () => handlePlayerMove(r, c));
+
+                        // Dragging event listeners for player mode
+                        cellDiv.addEventListener('mousedown', handleMouseDown);
+                        cellDiv.addEventListener('mouseover', handleMouseOver);
+                        // Using touch events for mobile compatibility
+                        cellDiv.addEventListener('touchstart', handleTouchStart);
+                        cellDiv.addEventListener('touchmove', handleTouchMove);
                     }
                     container.appendChild(cellDiv);
                 }
@@ -321,7 +376,7 @@
             numCols = parseInt(colsInput.value);
 
             currentGrid = Array(numRows).fill(0).map(() =>
-                Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled' }))
+                Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled', directionEntered: null }))
             );
             startCell = null; // Reset start cell
 
@@ -387,7 +442,7 @@
          * This allows sharing the URL directly and persists the state.
          */
         function updateUrlWithGrid() {
-            // Only include 'type' in the grid for encoding, remove 'state'
+            // Only include 'type' in the grid for encoding, remove 'state' and `directionEntered`
             const cleanGrid = currentGrid.map(row => row.map(cell => ({ type: cell.type })));
             const gridConfig = {
                 rows: numRows,
@@ -409,19 +464,19 @@
         function initializePlayerGame(gridConfig) {
             numRows = gridConfig.rows;
             numCols = gridConfig.cols;
-            currentGrid = gridConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+            // When loading, ensure state and directionEntered are reset
+            currentGrid = gridConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled', directionEntered: null })));
             startCell = gridConfig.start;
 
             if (!startCell) {
-                // This scenario should ideally be caught before entering player mode
-                // but as a fallback, show an error and return to editor
                 showModal('Puzzle Error', 'No starting cell found for this puzzle. Returning to editor mode.');
-                setEditorMode({ rows: numRows, cols: numCols, grid: currentGrid, start: null });
+                setEditorMode({ rows: numRows, cols: numCols, grid: currentGrid.map(row => row.map(c => ({type: c.type}))), start: null });
                 return;
             }
 
             // Mark the start cell and set initial player position
             currentGrid[startCell.row][startCell.col].state = 'current-position';
+            currentGrid[startCell.row][startCell.col].directionEntered = null; // Start cell has no direction entered
             currentPlayerPosition = { ...startCell };
             path = [{ ...startCell }]; // Path starts with the starting cell
 
@@ -430,41 +485,68 @@
         }
 
         /**
+         * Calculates the direction from a previous cell to a current cell.
+         * @param {object} prevPos - Previous position {row, col}.
+         * @param {object} currPos - Current position {row, col}.
+         * @returns {string|null} - Direction ('up', 'down', 'left', 'right') or null if not adjacent.
+         */
+        function getDirection(prevPos, currPos) {
+            if (currPos.row < prevPos.row) return 'up';
+            if (currPos.row > prevPos.row) return 'down';
+            if (currPos.col < prevPos.col) return 'left';
+            if (currPos.col > prevPos.col) return 'right';
+            return null; // Should not happen for adjacent moves
+        }
+
+        /**
          * Handles a player's move.
          * @param {number} r - Row index of the target cell.
          * @param {number} c - Column index of the target cell.
+         * @returns {boolean} - True if the move was successful, false otherwise.
          */
         function handlePlayerMove(r, c) {
+            // If the game is already over, prevent further moves
+            if (gameStatus.textContent.includes('Congratulations') || gameStatus.textContent.includes('Game Over')) {
+                return false;
+            }
+
             const targetCell = currentGrid[r][c];
 
             // Invalid move conditions
             if (targetCell.type === 'blocked') {
-                showModal('Invalid Move', 'Cannot move into a blocked cell.');
-                return;
+                if (!isDragging) showModal('Invalid Move', 'Cannot move into a blocked cell.');
+                return false;
             }
             // Check if the target cell is already part of the path (excluding current position)
             if (path.some(p => p.row === r && p.col === c)) {
-                 showModal('Invalid Move', 'Cannot move into an already visited cell.');
-                 return;
+                 if (!isDragging) showModal('Invalid Move', 'Cannot move into an already visited cell.');
+                 return false;
             }
             if (!isAdjacent(currentPlayerPosition.row, currentPlayerPosition.col, r, c)) {
-                showModal('Invalid Move', 'You can only move to an adjacent cell (up, down, left, right).');
-                return;
+                // Only show modal if it's not a drag/mouseover that's trying to pathfind to a non-adjacent cell
+                if (!isDragging) {
+                    showModal('Invalid Move', 'You can only move to an adjacent cell (up, down, left, right).');
+                }
+                return false;
             }
 
-            // Update previous current position's state
+            // Update previous current position's state and direction
             const prevCell = currentGrid[currentPlayerPosition.row][currentPlayerPosition.col];
             // The start cell type is 'start', but its state reflects it's now part of the path
             prevCell.state = 'filled';
+            // Set direction for the *previous* cell (direction exited)
+            // Or, more intuitively, the direction for the *new* cell is the direction it was *entered from*
+            prevCell.directionEntered = getDirection({row: r, col: c}, currentPlayerPosition); // Direction to exit previous cell
 
-
-            // Update target cell to 'current-position'
+            // Update target cell to 'current-position' and its directionEntered
             targetCell.state = 'current-position';
+            targetCell.directionEntered = getDirection(currentPlayerPosition, {row: r, col: c}); // Direction entered target cell
             currentPlayerPosition = { row: r, col: c };
             path.push({ row: r, col: c });
 
             renderGrid(playerGridContainer, 'player');
             checkGameEnd();
+            return true;
         }
 
         /**
@@ -492,12 +574,14 @@
                 gameStatus.classList.add('text-green-600');
                 // Disable further moves
                 playerGridContainer.style.pointerEvents = 'none';
+                document.removeEventListener('keydown', handleKeyDown); // Disable keyboard
             } else if (!hasValidMoves()) {
                 gameStatus.textContent = 'Game Over! No more moves available.';
                 gameStatus.classList.remove('text-green-600', 'text-gray-800');
                 gameStatus.classList.add('text-red-600');
                 // Disable further moves
                 playerGridContainer.style.pointerEvents = 'none';
+                document.removeEventListener('keydown', handleKeyDown); // Disable keyboard
             } else {
                 updateGameStatus();
             }
@@ -571,6 +655,12 @@
             playerModeUi.classList.add('hidden');
             modeDisplay.textContent = 'Editor Mode';
 
+            // Remove player mode specific event listeners
+            document.removeEventListener('mouseup', handleMouseUp);
+            document.removeEventListener('touchend', handleMouseUp); // Using handleMouseUp for touch end
+            document.removeEventListener('keydown', handleKeyDown);
+
+
             if (configToEdit) {
                 // Load existing config into editor
                 numRows = configToEdit.rows;
@@ -578,14 +668,14 @@
                 rowsInput.value = configToEdit.rows;
                 numCols = configToEdit.cols;
                 // Deep copy grid to ensure editor changes don't affect player state directly before 'Play This Puzzle'
-                currentGrid = configToEdit.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+                currentGrid = configToEdit.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled', directionEntered: null })));
                 startCell = configToEdit.start;
             } else {
                 // No config provided, create a fresh default grid for editing
                 numRows = parseInt(rowsInput.value);
                 numCols = parseInt(colsInput.value);
                 currentGrid = Array(numRows).fill(0).map(() =>
-                    Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled' }))
+                    Array(numCols).fill(0).map(() => ({ type: 'empty', state: 'unfilled', directionEntered: null }))
                 );
                 startCell = null;
             }
@@ -601,6 +691,11 @@
             editorModeUi.classList.add('hidden');
             playerModeUi.classList.remove('hidden');
             modeDisplay.textContent = 'Player Mode';
+
+            // Add player mode specific event listeners
+            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('touchend', handleMouseUp); // Use same handler for touch end
+            document.addEventListener('keydown', handleKeyDown);
 
             if (configToPlay) {
                 initializePlayerGame(configToPlay);
@@ -634,19 +729,159 @@
          * @returns {object} - A default grid configuration.
          */
         function generateDefaultGridConfig() {
-            const defaultRows = 5;
-            const defaultCols = 5;
-            const defaultGrid = Array(defaultRows).fill(0).map(() =>
-                Array(defaultCols).fill(0).map(() => ({ type: 'empty' }))
-            );
-            // Set a default start cell (e.g., top-left)
-            defaultGrid[0][0].type = 'start';
-            return {
-                rows: defaultRows,
-                cols: defaultCols,
-                grid: defaultGrid,
-                start: { row: 0, col: 0 }
-            };
+            // Your provided encoded grid configuration
+            const encodedDefaultGrid = "eyJyb3dzIjo4LCJjb2xzIjo2LCJncmlkIjpbW3sidHlwZSI6ImJsb2NrZWQifSx7InR5cGUiOiJibG9ja2VkIn0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifV0sW3sidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9XSxbeyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJibG9ja2VkIn0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifV0sW3sidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiYmxvY2tlZCJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImJsb2NrZWQifV0sW3sidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJzdGFydCJ9XSxbeyJ0eXBlIjoiYmxvY2tlZCJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImJsb2NrZWQifSx7InR5cGUiOiJibG9ja2VkIn1dLFt7InR5cGUiOiJibG9ja2VkIn0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJlbXB0eSJ9XSxbeyJ0eXBlIjoiYmxvY2tlZCJ9LHsidHlwZSI6ImVtcHR5In0seyJ0eXBlIjoiZW1wdHkifSx7InR5cGUiOiJibG9ja2VkIn0seyJ0eXBlIjoiYmxvY2tlZCJ9LHsidHlwZSI6ImVtcHR5In1dXSwic3RhcnQiOnsicm93Ijo0LCJjb2wiOjV9fQ==";
+            try {
+                return JSON.parse(atob(encodedDefaultGrid));
+            } catch (e) {
+                console.error("Error decoding default grid:", e);
+                // Fallback to a simpler default if the provided one fails
+                const defaultRows = 5;
+                const defaultCols = 5;
+                const defaultGrid = Array(defaultRows).fill(0).map(() =>
+                    Array(defaultCols).fill(0).map(() => ({ type: 'empty' }))
+                );
+                defaultGrid[0][0].type = 'start';
+                return {
+                    rows: defaultRows,
+                    cols: defaultCols,
+                    grid: defaultGrid,
+                    start: { row: 0, col: 0 }
+                };
+            }
+        }
+
+        // --- Keyboard Controls ---
+        /**
+         * Handles keyboard input for player movement (arrow keys).
+         * @param {KeyboardEvent} event - The keyboard event.
+         */
+        function handleKeyDown(event) {
+            if (modeDisplay.textContent !== 'Player Mode' || !currentPlayerPosition) return;
+
+            let nextRow = currentPlayerPosition.row;
+            let nextCol = currentPlayerPosition.col;
+            let moved = false;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                    nextRow--;
+                    moved = true;
+                    break;
+                case 'ArrowDown':
+                    nextRow++;
+                    moved = true;
+                    break;
+                case 'ArrowLeft':
+                    nextCol--;
+                    moved = true;
+                    break;
+                case 'ArrowRight':
+                    nextCol++;
+                    moved = true;
+                    break;
+            }
+
+            if (moved && nextRow >= 0 && nextRow < numRows && nextCol >= 0 && nextCol < numCols) {
+                event.preventDefault(); // Prevent page scrolling with arrow keys
+                handlePlayerMove(nextRow, nextCol);
+            }
+        }
+
+        // --- Click-and-Drag / Touch Controls ---
+        /**
+         * Handles mouse down event on a player grid cell to start dragging.
+         * @param {MouseEvent} event - The mouse event.
+         */
+        function handleMouseDown(event) {
+            if (modeDisplay.textContent !== 'Player Mode' || event.button !== 0) return; // Only left click
+
+            const targetCellDiv = event.target.closest('.grid-cell');
+            if (targetCellDiv) {
+                const r = parseInt(targetCellDiv.dataset.row);
+                const c = parseInt(targetCellDiv.dataset.col);
+
+                // If clicking on the current position, prepare for dragging
+                if (currentPlayerPosition && currentPlayerPosition.row === r && currentPlayerPosition.col === c) {
+                    isDragging = true;
+                    // No need to call handlePlayerMove, as current position is already the start of the drag
+                } else {
+                    // If clicking on a new valid cell, attempt a single move, then prepare for drag
+                    if (handlePlayerMove(r, c)) {
+                        isDragging = true;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Handles touch start event on a player grid cell to start dragging.
+         * @param {TouchEvent} event - The touch event.
+         */
+        function handleTouchStart(event) {
+            if (modeDisplay.textContent !== 'Player Mode' || event.touches.length > 1) return; // Only single touch
+
+            const touch = event.touches[0];
+            const targetCellDiv = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.grid-cell');
+            if (targetCellDiv) {
+                event.preventDefault(); // Prevent scrolling
+                const r = parseInt(targetCellDiv.dataset.row);
+                const c = parseInt(targetCellDiv.dataset.col);
+
+                if (currentPlayerPosition && currentPlayerPosition.row === r && currentPlayerPosition.col === c) {
+                    isDragging = true;
+                } else {
+                    if (handlePlayerMove(r, c)) {
+                        isDragging = true;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Handles mouse over event during dragging to extend the path.
+         * @param {MouseEvent} event - The mouse event.
+         */
+        function handleMouseOver(event) {
+            if (!isDragging || modeDisplay.textContent !== 'Player Mode') return;
+
+            const targetCellDiv = event.target.closest('.grid-cell');
+            if (targetCellDiv) {
+                const r = parseInt(targetCellDiv.dataset.row);
+                const c = parseInt(targetCellDiv.dataset.col);
+
+                // Attempt to move to this cell if it's different from the current position
+                if (currentPlayerPosition && (currentPlayerPosition.row !== r || currentPlayerPosition.col !== c)) {
+                    handlePlayerMove(r, c); // handlePlayerMove will validate adjacency and visited state
+                }
+            }
+        }
+
+        /**
+         * Handles touch move event during dragging to extend the path.
+         * @param {TouchEvent} event - The touch event.
+         */
+        function handleTouchMove(event) {
+            if (!isDragging || modeDisplay.textContent !== 'Player Mode' || event.touches.length > 1) return;
+
+            const touch = event.touches[0];
+            const targetCellDiv = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.grid-cell');
+            if (targetCellDiv) {
+                event.preventDefault(); // Prevent scrolling while dragging
+                const r = parseInt(targetCellDiv.dataset.row);
+                const c = parseInt(targetCellDiv.dataset.col);
+
+                if (currentPlayerPosition && (currentPlayerPosition.row !== r || currentPlayerPosition.col !== c)) {
+                    handlePlayerMove(r, c);
+                }
+            }
+        }
+
+        /**
+         * Handles mouse up / touch end event to stop dragging.
+         */
+        function handleMouseUp() {
+            isDragging = false;
         }
 
 
@@ -698,7 +933,7 @@
                     // Ensure we update currentGrid/startCell before setting player mode
                     numRows = decodedConfig.rows;
                     numCols = decodedConfig.cols;
-                    currentGrid = decodedConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled' })));
+                    currentGrid = decodedConfig.grid.map(row => row.map(cell => ({ ...cell, state: 'unfilled', directionEntered: null })));
                     startCell = decodedConfig.start;
                     setPlayerMode(decodedConfig); // Re-initialize player mode with the new state
                 } catch (e) {
