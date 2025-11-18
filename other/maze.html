@@ -29,6 +29,13 @@
             transition: background-color 0.5s;
         }
 
+        /* disable overscroll / pull-to-refresh for browsers that support it */
+        html, body {
+            overscroll-behavior-y: none;
+            -ms-touch-action: pan-y;
+            touch-action: pan-y;
+        }
+
         h1 {
             font-weight: 900;
             text-transform: uppercase;
@@ -441,6 +448,19 @@
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }, {passive: false});
+
+        // Prevent pull-to-refresh when user pulls down at top of page (mobile Safari / others)
+        function onTouchMovePrevent(e) {
+            if (!gameActive) return;
+            const touch = e.changedTouches ? e.changedTouches[0] : null;
+            if (!touch) return;
+            const diffY = touch.screenY - touchStartY;
+            if (window.scrollY === 0 && diffY > 0) {
+                // The user is pulling down at the top — prevent the browser's refresh
+                e.preventDefault();
+            }
+        }
+        document.addEventListener('touchmove', onTouchMovePrevent, {passive: false});
 
         document.addEventListener('touchend', (e) => {
             if (!gameActive) return;
