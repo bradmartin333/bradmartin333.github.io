@@ -23,12 +23,13 @@ const Utils = {
 
     // Simple collision check for pickup items
     checkCollision(a, b, size) {
-        return a.x < b.x + size && a.x + 32 > b.x &&
-               a.y < b.y + size && a.y + 32 > b.y;
+        const aSize = CONFIG.PLAYER_SIZE;
+        return a.x < b.x + size && a.x + aSize > b.x &&
+               a.y < b.y + size && a.y + aSize > b.y;
     },
 
     // Check if a position is safe (no obstacles nearby)
-    isSafePosition(x, y, width, height, obstacles, minDistance = CONFIG.SAFE_SPAWN_DISTANCE) {
+    isSafePosition(x, y, width, height, obstacles) {
         for (let obs of obstacles) {
             if (this.checkRectCollision(x, y, width, height, obs.x, obs.y, obs.w, obs.h)) {
                 return false;

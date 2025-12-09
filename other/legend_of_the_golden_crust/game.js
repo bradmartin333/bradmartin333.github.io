@@ -242,9 +242,9 @@ const Game = {
             ey = Math.random() * (CONFIG.WORLD_HEIGHT - 40);
             let dist = Utils.distance(ex, ey, this.player.x, this.player.y);
             
-            if (farAway && dist > 600 && Utils.isSafePosition(ex, ey, 32, 40, allObstacles, 50)) {
+            if (farAway && dist > 600 && Utils.isSafePosition(ex, ey, 32, 40, allObstacles)) {
                 safe = true;
-            } else if (!farAway && dist > 400 && Utils.isSafePosition(ex, ey, 32, 40, allObstacles, 50)) {
+            } else if (!farAway && dist > 400 && Utils.isSafePosition(ex, ey, 32, 40, allObstacles)) {
                 safe = true;
             }
             attempts++;
