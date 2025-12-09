@@ -139,8 +139,10 @@ const Game = {
             });
         }
 
-        // Find safe spawn position for player
+        // Combine obstacles for collision checking
         const allObstacles = [...this.obstacles, ...this.trees];
+
+        // Find safe spawn position for player
         let playerSpawned = false;
         let attempts = 0;
         while (!playerSpawned && attempts < 100) {
@@ -191,7 +193,6 @@ const Game = {
         }
 
         // Generate tokens (avoid obstacles)
-        const allObstacles = [...this.obstacles, ...this.trees];
         while (this.tokens.length < CONFIG.TOKENS_TOTAL) {
             let tx = 100 + Math.random() * (CONFIG.WORLD_WIDTH - 200);
             let ty = 100 + Math.random() * (CONFIG.WORLD_HEIGHT - 200);
