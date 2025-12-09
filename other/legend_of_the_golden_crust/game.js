@@ -792,11 +792,12 @@ const Game = {
         this.player.megaMode = true;
         this.player.megaModeTime = CONFIG.MEGA_MODE_DURATION;
         document.getElementById('game-container').classList.add('mega-mode-active');
-        document.getElementById('powerup-status').innerText = "MEGA MODE!";
-        document.getElementById('powerup-status').style.color = '#FFD700';
+        this.setPowerupStatus("MEGA MODE!", '#FFD700');
         
-        // Visual and audio feedback
-        Utils.createParticles(this.particles, this.player.x, this.player.y, '#FFD700', 30);
+        // Visual feedback - particles from center
+        const centerX = this.player.x + CONFIG.PLAYER_SIZE / 2;
+        const centerY = this.player.y + CONFIG.PLAYER_SIZE / 2;
+        Utils.createParticles(this.particles, centerX, centerY, '#FFD700', 30);
     },
 
     takeDamage(amount, source = 'enemy') {
