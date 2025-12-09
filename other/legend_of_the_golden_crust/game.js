@@ -56,6 +56,9 @@ const Game = {
     // Timing
     nextShotTime: 0,
     lastCouchSpawnCheck: 0,
+    
+    // Death tracking
+    deathReason: '',
 
     // Initialize game
     init() {
@@ -134,6 +137,28 @@ const Game = {
                 y: Math.random() * (CONFIG.WORLD_HEIGHT - 40),
                 w: 40, h: 40
             });
+        }
+
+        // Find safe spawn position for player
+        const allObstacles = [...this.obstacles, ...this.trees];
+        let playerSpawned = false;
+        let attempts = 0;
+        while (!playerSpawned && attempts < 100) {
+            const px = 100 + Math.random() * (CONFIG.WORLD_WIDTH - 200);
+            const py = 100 + Math.random() * (CONFIG.WORLD_HEIGHT - 200);
+            
+            if (Utils.isSafePosition(px, py, CONFIG.PLAYER_SIZE, CONFIG.PLAYER_SIZE, allObstacles)) {
+                this.player.x = px;
+                this.player.y = py;
+                playerSpawned = true;
+            }
+            attempts++;
+        }
+        
+        // Fallback if no safe position found (unlikely)
+        if (!playerSpawned) {
+            this.player.x = 200;
+            this.player.y = 200;
         }
 
         // Generate space heaters near buildings
@@ -359,12 +384,22 @@ const Game = {
 
         let currentSpeed = CONFIG.PLAYER_SPEED;
         
-        // Speed boost
-        if (this.player.speedBoost > 0) {
-            currentSpeed *= 1.5;
-            this.player.speedBoost -= dt;
-            if (this.player.speedBoost <= 0) {
-                document.getElementById('powerup-status').innerText = "";
+        // Speed boost/debuff system
+        if (this.player.speedBoost !== 0) {
+            if (this.player.speedBoost > 0) {
+                currentSpeed *= 1.5; // Boost
+                this.player.speedBoost -= dt;
+                if (this.player.speedBoost <= 0) {
+                    this.player.speedBoost = 0;
+                    this.clearPowerupStatus();
+                }
+            } else {
+                currentSpeed *= 0.5; // Slow (negative speedBoost)
+                this.player.speedBoost += dt; // Count back up to 0
+                if (this.player.speedBoost >= 0) {
+                    this.player.speedBoost = 0;
+                    this.clearPowerupStatus();
+                }
             }
         }
 
@@ -419,7 +454,7 @@ const Game = {
             this.player.weaponUpgradeTime -= dt;
             if (this.player.weaponUpgradeTime <= 0) {
                 this.player.weaponUpgrade = null;
-                document.getElementById('powerup-status').innerText = "";
+                this.clearPowerupStatus();
             }
         }
 
@@ -429,7 +464,7 @@ const Game = {
             if (this.player.megaModeTime <= 0) {
                 this.player.megaMode = false;
                 document.getElementById('game-container').classList.remove('mega-mode-active');
-                document.getElementById('powerup-status').innerText = "";
+                this.clearPowerupStatus();
             }
         }
 
@@ -561,7 +596,7 @@ const Game = {
             if (this.player.invulnerable <= 0) {
                 if (this.player.x < e.x + 20 && this.player.x + 20 > e.x &&
                     this.player.y < e.y + 30 && this.player.y + 30 > e.y) {
-                    this.takeDamage(e.damage);
+                    this.takeDamage(e.damage, 'enemy');
                 }
             }
         }
@@ -604,10 +639,10 @@ const Game = {
                     else if (w.type === 'SPEED') msg = "RAPID FIRE!";
                     else if (w.type === 'FLAME') msg = "FLAME SHOT!";
                     
-                    document.getElementById('powerup-status').innerText = msg;
+                    this.setPowerupStatus(msg);
                     setTimeout(() => {
                         if (this.player.weaponUpgradeTime <= 0) {
-                            document.getElementById('powerup-status').innerText = "";
+                            this.clearPowerupStatus();
                         }
                     }, 2000);
                 }
@@ -630,21 +665,21 @@ const Game = {
         if (item.type === 'SLOW') {
             // Reduce speed temporarily
             this.player.speedBoost = -5; // Negative boost = slow
-            document.getElementById('powerup-status').innerText = "SLOWED!";
+            this.setPowerupStatus("SLOWED!");
             setTimeout(() => {
                 this.player.speedBoost = 0;
-                document.getElementById('powerup-status').innerText = "";
+                this.clearPowerupStatus();
             }, 5000);
         } else if (item.type === 'DAMAGE') {
-            this.takeDamage(20);
-            document.getElementById('powerup-status').innerText = "POISON!";
+            this.takeDamage(20, 'poison');
+            this.setPowerupStatus("POISON!");
         } else if (item.type === 'COLD') {
             this.player.warmth = Math.max(0, this.player.warmth - 30);
-            document.getElementById('powerup-status').innerText = "FREEZING!";
+            this.setPowerupStatus("FREEZING!");
             this.updateHUD();
         } else if (item.type === 'HORDE') {
             // Spawn enemy horde
-            document.getElementById('powerup-status').innerText = "HORDE INCOMING!";
+            this.setPowerupStatus("HORDE INCOMING!");
             for (let i = 0; i < CONFIG.HORDE_SIZE; i++) {
                 setTimeout(() => {
                     this.spawnEnemy(false, 'RA');
@@ -653,9 +688,7 @@ const Game = {
         }
         
         setTimeout(() => {
-            if (document.getElementById('powerup-status').innerText !== "MEGA MODE!") {
-                document.getElementById('powerup-status').innerText = "";
-            }
+            this.clearPowerupStatus();
         }, 2000);
     },
 
@@ -703,11 +736,9 @@ const Game = {
                 this.player.warmth = Math.min(CONFIG.WARMTH_MAX, 
                     this.player.warmth + CONFIG.WARMTH_STERNO_BOOST);
                 s.active = false;
-                document.getElementById('powerup-status').innerText = "WARMED UP!";
+                this.setPowerupStatus("WARMED UP!");
                 setTimeout(() => {
-                    if (document.getElementById('powerup-status').innerText === "WARMED UP!") {
-                        document.getElementById('powerup-status').innerText = "";
-                    }
+                    this.clearPowerupStatus();
                 }, 2000);
             }
         }
@@ -716,7 +747,7 @@ const Game = {
 
         // Take damage if too cold
         if (this.player.warmth <= 0) {
-            this.takeDamage(5 * dt); // Gradual damage when frozen
+            this.takeDamage(5 * dt, 'cold'); // Gradual damage when frozen
         }
 
         this.updateHUD();
@@ -767,23 +798,45 @@ const Game = {
         Utils.createParticles(this.particles, this.player.x, this.player.y, '#FFD700', 30);
     },
 
-    takeDamage(amount) {
+    takeDamage(amount, source = 'enemy') {
         if (this.player.armor) {
             this.player.armor = false;
-            document.getElementById('powerup-status').innerText = "ARMOR BROKEN!";
+            this.setPowerupStatus("ARMOR BROKEN!");
             this.player.invulnerable = 1;
-            Utils.createParticles(this.particles, this.player.x, this.player.y, '#C0C0C0', 10);
+            const centerX = this.player.x + CONFIG.PLAYER_SIZE / 2;
+            const centerY = this.player.y + CONFIG.PLAYER_SIZE / 2;
+            Utils.createParticles(this.particles, centerX, centerY, '#C0C0C0', 10);
             return;
         }
 
         this.player.hp -= amount;
         this.player.invulnerable = 1.5;
-        Utils.createParticles(this.particles, this.player.x, this.player.y, '#F4C430', 5);
+        
+        // Create particles from player center
+        const centerX = this.player.x + CONFIG.PLAYER_SIZE / 2;
+        const centerY = this.player.y + CONFIG.PLAYER_SIZE / 2;
+        
+        // Different particle colors for different damage sources
+        let particleColor = '#F4C430'; // Default yellow
+        if (source === 'cold') {
+            particleColor = '#00CED1'; // Cyan for cold
+        }
+        
+        Utils.createParticles(this.particles, centerX, centerY, particleColor, 5);
         this.updateHUD();
 
         if (this.player.hp <= 0) {
+            // Set death reason
+            if (source === 'cold') {
+                this.deathReason = 'Frozen to Death';
+            } else if (source === 'poison') {
+                this.deathReason = 'Poisoned';
+            } else {
+                this.deathReason = 'Devoured by Students';
+            }
+            
             this.state = 'GAMEOVER';
-            document.getElementById('game-over-screen').classList.remove('hidden');
+            this.showGameOver();
         }
     },
 
@@ -791,19 +844,17 @@ const Game = {
         p.active = false;
         if (p.type === 'HEALTH') {
             this.player.hp = Math.min(this.player.hp + 30, this.player.maxHp);
-            document.getElementById('powerup-status').innerText = "HEALED!";
+            this.setPowerupStatus("HEALED!");
         } else if (p.type === 'ARMOR') {
             this.player.armor = true;
-            document.getElementById('powerup-status').innerText = "FOIL ARMOR EQUIPPED!";
+            this.setPowerupStatus("FOIL ARMOR EQUIPPED!");
         } else if (p.type === 'SPEED') {
             this.player.speedBoost = 5;
-            document.getElementById('powerup-status').innerText = "CAFFEINE RUSH!";
+            this.setPowerupStatus("CAFFEINE RUSH!");
         }
         this.updateHUD();
         setTimeout(() => {
-            if (document.getElementById('powerup-status').innerText !== "MEGA MODE!") {
-                document.getElementById('powerup-status').innerText = "";
-            }
+            this.clearPowerupStatus();
         }, 2000);
     },
 
@@ -836,6 +887,24 @@ const Game = {
         }
     },
 
+    showGameOver() {
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const gameOverTitle = gameOverScreen.querySelector('h1');
+        const gameOverText = gameOverScreen.querySelector('p');
+        
+        gameOverTitle.textContent = this.deathReason.toUpperCase() + '!';
+        
+        if (this.deathReason === 'Frozen to Death') {
+            gameOverText.textContent = 'You failed to stay warm in the harsh campus winter.';
+        } else if (this.deathReason === 'Poisoned') {
+            gameOverText.textContent = 'A toxic enemy drop proved to be your undoing.';
+        } else {
+            gameOverText.textContent = 'The hungry students enjoyed a delicious empanada meal.';
+        }
+        
+        gameOverScreen.classList.remove('hidden');
+    },
+
     winGame() {
         this.state = 'WIN';
         document.getElementById('win-screen').classList.remove('hidden');
@@ -859,6 +928,21 @@ const Game = {
             document.getElementById('warmth-fill').style.background = '#0088ff';
         } else {
             document.getElementById('warmth-fill').style.background = '#ff8800';
+        }
+    },
+
+    // UI Helper functions
+    setPowerupStatus(text, color = 'yellow') {
+        const statusEl = document.getElementById('powerup-status');
+        statusEl.innerText = text;
+        statusEl.style.color = color;
+    },
+
+    clearPowerupStatus() {
+        const statusEl = document.getElementById('powerup-status');
+        if (statusEl.innerText !== "MEGA MODE!") {
+            statusEl.innerText = "";
+            statusEl.style.color = 'yellow';
         }
     },
 

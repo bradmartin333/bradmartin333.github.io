@@ -14,16 +14,23 @@
 
         <div id="ui-layer">
             <div id="hud">
-                <div>
-                    <div class="bar-container">HP: <div id="hp-bar">
+                <div class="hud-stats">
+                    <div class="bar-container">
+                        <span class="bar-label">HP:</span>
+                        <div id="hp-bar">
                             <div id="hp-fill"></div>
                         </div>
                     </div>
-                    <div class="bar-container">WARMTH: <div id="warmth-bar">
+                    <div class="bar-container">
+                        <span class="bar-label">WARMTH:</span>
+                        <div id="warmth-bar">
                             <div id="warmth-fill"></div>
                         </div>
                     </div>
-                    <div>SALSAS: <span id="tokens-found">0</span>/5</div>
+                    <div class="bar-container">
+                        <span class="bar-label">SALSAS:</span>
+                        <span id="tokens-found">0</span>/5
+                    </div>
                     <div id="powerup-status" style="color: yellow; font-size: 10px; margin-top:5px; height:12px;"></div>
                 </div>
             </div>
