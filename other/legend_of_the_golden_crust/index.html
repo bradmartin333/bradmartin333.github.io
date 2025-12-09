@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Legend of the Golden Crust: Combat Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <div id="ui-layer">
+            <div id="hud">
+                <div>
+                    <div class="bar-container">HP: <div id="hp-bar">
+                            <div id="hp-fill"></div>
+                        </div>
+                    </div>
+                    <div class="bar-container">WARMTH: <div id="warmth-bar">
+                            <div id="warmth-fill"></div>
+                        </div>
+                    </div>
+                    <div>SALSAS: <span id="tokens-found">0</span>/5</div>
+                    <div id="powerup-status" style="color: yellow; font-size: 10px; margin-top:5px; height:12px;"></div>
+                </div>
+            </div>
+
+            <div id="controls">
+                <div class="dpad">
+                    <div class="d-btn up" data-key="ArrowUp"></div>
+                    <div class="d-btn down" data-key="ArrowDown"></div>
+                    <div class="d-btn left" data-key="ArrowLeft"></div>
+                    <div class="d-btn right" data-key="ArrowRight"></div>
+                </div>
+                <div class="action-btn-container">
+                    <div class="action-btn" data-key="Space">CHEESE<br>SHOT</div>
+                </div>
+            </div>
+
+            <div id="message-box">
+                <p id="message-text"></p>
+                <button id="close-msg">CONTINUE</button>
+            </div>
+
+            <footer>
+                Last Updated: December 2025
+            </footer>
+        </div>
+
+        <div id="lore-screen">
+            <h1 style="font-size: 16px;">THE LEGEND OF THE GOLDEN CRUST</h1>
+            <div style="font-size: 10px; line-height: 1.8; max-width: 650px; padding: 20px; text-align: left;">
+                <p>Long ago, on the mystical campus of Universidad de las Delicias, there existed a legendary empanada
+                    known as <span style="color: #FFD700;">THE GOLDEN CRUST</span>.</p>
+
+                <p>Baked by the ancient Baker-Wizard Don Horneado, this empanada contained the perfect balance of
+                    flavor, crunch, and magical sustenance.</p>
+
+                <p>But the recipe was lost to time, scattered across <span style="color: #ff6b6b;">5 Sacred Salsa
+                        Jars</span> hidden throughout the campus grounds.</p>
+
+                <p>Now, as finals week approaches, the campus has been overrun by desperate, hungry students, each more
+                    ravenous than the last:</p>
+
+                <p style="margin-left: 20px;">
+                    <span style="color: #ff4444;">• PROFESSORS</span> - Elite hunters with decades of food-finding
+                    experience<br>
+                    <span style="color: #ff8844;">• GRAD STUDENTS</span> - Caffeinated and relentless pursuers<br>
+                    <span style="color: #ffaa44;">• RAs</span> - Broke and hungry, they hunt in greater numbers
+                </p>
+
+                <p>You are the last empanada descendant. Navigate the treacherous campus, avoid the buildings and
+                    statues, defend yourself with molten cheese shots, and collect all 5 salsas to uncover the ancient
+                    recipe!</p>
+
+                <p style="color: #ff8800;">Stay warm to survive! Find space heaters near buildings, grab sterno fuel, or warm up by the rare burning couch!</p>
+            </div>
+            <button id="lore-continue-btn">BEGIN YOUR JOURNEY</button>
+        </div>
+
+        <div id="start-screen" class="hidden">
+            <h1>THE LEGEND OF<br>THE GOLDEN CRUST</h1>
+            <p style="font-size: 12px; line-height: 20px; max-width: 600px; padding: 20px;">
+                Survive the hungry horde on campus!<br><br>
+                Find the 5 Ancient Salsas to reveal the truth.<br><br>
+                Stay warm to survive!<br><br>
+                <strong>Controls:</strong><br>
+                Arrow Keys / WASD / D-Pad to Move<br>
+                SPACE / Button to Fire Molten Cheese
+            </p>
+            <button id="start-btn">START ADVENTURE</button>
+        </div>
+
+        <div id="game-over-screen" class="hidden">
+            <h1 style="color: #ff4444;">DEVOURED!</h1>
+            <p>The students enjoyed a delicious meal.</p>
+            <button id="retry-btn">TRY AGAIN</button>
+        </div>
+
+        <div id="win-screen" class="hidden">
+            <h1>MYSTERY SOLVED!</h1>
+            <p style="color: #FFD700; margin-bottom: 20px;">You are the Supreme Snack!</p>
+            <div id="final-lore"
+                style="font-size: 10px; max-width: 600px; line-height: 1.6; text-align: left; background: #333; padding: 15px; border: 2px dashed #666;">
+            </div>
+            <button id="restart-btn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Load scripts in order -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="sprites.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>
