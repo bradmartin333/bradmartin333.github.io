@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    background-color: #222;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive, monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    touch-action: none;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4/3;
+    background-color: #000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    image-rendering: pixelated;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* UI Overlay */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#hud {
+    padding: 15px;
+    text-shadow: 2px 2px 0 #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.hud-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.bar-container {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bar-label {
+    min-width: 60px;
+    font-size: 10px;
+}
+
+#hp-bar, #warmth-bar {
+    width: 100px;
+    height: 10px;
+    background: #555;
+    border: 2px solid #fff;
+    display: inline-block;
+}
+
+#hp-fill {
+    width: 100%;
+    height: 100%;
+    background: #0f0;
+    transition: width 0.2s;
+}
+
+#warmth-fill {
+    width: 100%;
+    height: 100%;
+    background: #ff8800;
+    transition: width 0.2s;
+}
+
+#message-box {
+    background: rgba(0, 0, 0, 0.9);
+    border: 4px solid #fff;
+    margin: 20px;
+    padding: 20px;
+    min-height: 100px;
+    display: none;
+    pointer-events: auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.5;
+    position: absolute;
+    bottom: 20%;
+    left: 10%;
+    right: 10%;
+    z-index: 20;
+}
+
+#lore-screen,
+#start-screen,
+#win-screen,
+#game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+    pointer-events: auto;
+    text-align: center;
+}
+
+h1 {
+    color: #FFD700;
+    text-shadow: 4px 4px 0 #8B4513;
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
+button {
+    background: #FFD700;
+    border: 4px solid #8B4513;
+    color: #5d2e0b;
+    font-family: 'Press Start 2P', cursive;
+    padding: 15px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.1s;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:hover {
+    background: #fff;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.clue-text {
+    color: #4db8ff;
+    margin-bottom: 15px;
+}
+
+/* Mobile Controls */
+#controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: none;
+    pointer-events: auto;
+    z-index: 25;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    #controls {
+        display: flex;
+    }
+}
+
+.dpad {
+    width: 140px;
+    height: 140px;
+    position: relative;
+}
+
+.action-btn-container {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.d-btn,
+.action-btn {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    backdrop-filter: blur(2px);
+}
+
+.d-btn {
+    width: 45px;
+    height: 45px;
+}
+
+.action-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 100, 100, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+.d-btn:active,
+.action-btn:active {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.up {
+    top: 0;
+    left: 47px;
+}
+
+.down {
+    bottom: 0;
+    left: 47px;
+}
+
+.left {
+    top: 47px;
+    left: 0;
+}
+
+.right {
+    top: 47px;
+    right: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    font-size: 8px;
+    color: #888;
+    text-shadow: 1px 1px 0 #000;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* MEGA MODE visual effect */
+.mega-mode-active {
+    animation: megaPulse 0.5s infinite;
+}
+
+@keyframes megaPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+    }
+}
