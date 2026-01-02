@@ -22,6 +22,28 @@
             --shadow-soft: 4px 4px 0 #111;
         }
 
+        @keyframes cycle-header-bg {
+            0% {
+                background-color: var(--bg);
+            }
+
+            25% {
+                background-color: var(--accent);
+            }
+
+            50% {
+                background-color: var(--accent2);
+            }
+
+            75% {
+                background-color: var(--accent3);
+            }
+
+            100% {
+                background-color: var(--bg);
+            }
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -54,11 +76,12 @@
         header {
             border: var(--border) solid var(--ink);
             border-radius: var(--radius);
-            background: var(--bg);
+            background-color: var(--bg);
             box-shadow: var(--shadow);
             padding: 18px;
             display: grid;
             gap: 10px;
+            animation: cycle-header-bg 6s infinite ease;
         }
 
         h1 {
