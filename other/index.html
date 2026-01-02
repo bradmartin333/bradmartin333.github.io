@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Secret Pages</title>
+    <meta name="description" content="Neo-brutalist launch page for the /other directory." />
+    <style>
+        :root {
+            --ink: #111;
+            --bg: #fff240;
+            --paper: #ffffff;
+            --accent: #ff00a8;
+            --accent2: #00f5ff;
+            --accent3: #9dff00;
+            --accent4: #7c4dff;
+            --border: 3px;
+            --radius: 14px;
+            --gap: 14px;
+            --shadow: 7px 7px 0 #111;
+            --shadow-soft: 4px 4px 0 #111;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:focus-visible {
+            outline: 4px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        header {
+            border: var(--border) solid var(--ink);
+            border-radius: var(--radius);
+            background: var(--bg);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 46px);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
+
+        .grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--gap);
+        }
+
+        .section {
+            border: var(--border) solid var(--ink);
+            border-radius: var(--radius);
+            background: var(--paper);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .list {
+            list-style: none;
+            margin: 0;
+            padding: 10px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .card {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            border: var(--border) solid var(--ink);
+            border-radius: calc(var(--radius) - 4px);
+            background: #fff;
+            box-shadow: var(--shadow-soft);
+            transition: transform 90ms ease;
+        }
+
+        .list li:nth-child(4n+1) .card {
+            background: rgba(0, 245, 255, 0.22);
+        }
+
+        .list li:nth-child(4n+2) .card {
+            background: rgba(157, 255, 0, 0.22);
+        }
+
+        .list li:nth-child(4n+3) .card {
+            background: rgba(255, 0, 168, 0.18);
+        }
+
+        .list li:nth-child(4n) .card {
+            background: rgba(124, 77, 255, 0.16);
+        }
+
+        .card:hover {
+            transform: translate(-1px, -1px);
+            filter: saturate(1.15) contrast(1.05);
+        }
+
+        .name {
+            font-weight: 900;
+            font-size: 18px;
+            line-height: 1.15;
+        }
+
+        .meta {
+            color: rgba(17, 17, 17, 0.78);
+            font-size: 13px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .card {
+                transition: none;
+            }
+
+            .card:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>Secret Pages</h1>
+        </header>
+
+        <main class="grid">
+            <section class="section">
+                <ul class="list">
+                    <li>
+                        <a class="card" href="block_fill.html">
+                            <div class="name">Block Fill</div>
+                            <div class="meta">unfinished tool for sending puzzles encoded in an URL when you need help
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="fungiwatch.html">
+                            <div class="name">FungiWatch</div>
+                            <div class="meta">iNaturalist API demo page</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="maze.html">
+                            <div class="name">Maze</div>
+                            <div class="meta">for when you're extremely bored</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="ble/index.html">
+                            <div class="name">BLE</div>
+                            <div class="meta">chrome BLE test page</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="legend_of_the_golden_crust/index.html">
+                            <div class="name">Legend of the Golden Crust</div>
+                            <div class="meta">vibe coded empanada game</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="dad_bday.html">
+                            <div class="name">Dad's Birthday</div>
+                            <div class="meta">CLI card for my dad's birthday</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="card" href="mothers_day.html">
+                            <div class="name">Mother's Day</div>
+                            <div class="meta">CLI card for mother's day</div>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

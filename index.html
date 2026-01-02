@@ -29,7 +29,7 @@
     <div class="w3-half w3-green w3-container" style="height:700px">
       <div class="w3-padding-64 w3-center" style="color:black;">
         <h1>About Me</h1>
-        <a href="./paco-juego/index.html">
+        <a href="#" onclick="redirect()">
           <img class="w3-margin w3-square" style="width: 30%" alt="Logo" src="images/logoTransparent.png"
             onmouseover="this.src='images/logoRipple.gif';" onmouseout="this.src='images/logoTransparent.png';">
         </a>
@@ -50,6 +50,20 @@
     <div hidden="hidden"><img class="w3-margin w3-square" style="width: 30%" alt="Logo" src='images/logoRipple.gif'>
     </div>
   </div>
+  <script>
+    keyCode = 0;
+    document.addEventListener("keydown", function (event) {
+      keyCode = event.keyCode;
+    });
+    function redirect() {
+      if (keyCode == 16) {
+        window.location.href = "./other/index.html";
+      }
+      else {
+        window.location.href = "./paco-juego/index.html";
+      }
+    }
+  </script>
 </body>
 
 </html>
