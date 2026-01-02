@@ -1,0 +1,79 @@
+:root {
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 32px 16px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    line-height: 1.4;
+    background: #f6f7f9;
+    color: #111827;
+}
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+h1 {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+}
+
+.text-entry,
+textarea {
+    width: min(520px, 100%);
+    padding: 10px 12px;
+    margin: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: inherit;
+    font: inherit;
+    outline: none;
+}
+
+.text-entry:focus,
+textarea:focus {
+    border-color: #6b7280;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.25);
+}
+
+.button {
+    padding: 10px 14px;
+    margin: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #111827;
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+}
+
+.button:hover {
+    filter: brightness(1.05);
+}
+
+.button:active {
+    transform: translateY(1px);
+}
+
+textarea {
+    display: block;
+    margin: 12px auto 0;
+    resize: vertical;
+    min-height: 140px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+}
