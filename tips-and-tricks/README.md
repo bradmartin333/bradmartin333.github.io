@@ -190,4 +190,39 @@ extension SafeFilename on DateTime {
 
 ```
 
+# PostgreSQL on Ubuntu
+
+## Installation on host
+
+1. Update and install
+    1. `sudo apt update`
+    1. `sudo apt install postgresql postgresql-contrib`
+1. Configure Postgres to listen for remote connections: `sudo nano /etc/postgresql/12/main/postgresql.conf` (The version number could be different)
+    1. Find the line that says `#listen_addresses = 'localhost'` (it might be commented out with a #)
+    1. Change it to `listen_addresses = '*'`
+1. Allow your network subnet to connect: `sudo nano /etc/postgresql/12/main/pg_hba.conf`
+    1. Scroll to the bottom
+    1. Add entry for host machine IP (This one is 192.168.64.75) like:
+
+    ```
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    ...
+    host    all             all             192.168.64.0/22         md5
+    ```
+
+    - Copy the "METHOD" from the above entries
+1. Open the firewall on the default port: `sudo ufw allow 5432/tcp`
+1. Restart the service: `sudo systemctl restart postgresql`
+
+## Add a PostgreSQL database and user from client
+
+1. `ssh user@192.168.64.75`
+1. `sudo -i -u postgres`
+1. `psql`
+1. `CREATE DATABASE test_db;`
+1. `CREATE USER test_user WITH ENCRYPTED PASSWORD 'StrongPassword';`
+1. `GRANT ALL PRIVILEGES ON DATABASE test_db TO test_user;`
+1. `\q`
+1. `exit`
+
 # [Return to Home](../index.html)
