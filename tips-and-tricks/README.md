@@ -47,6 +47,12 @@ if [[ $SCRIPT_DIR != $(pwd) ]]; then cd $SCRIPT_DIR; fi
 nohup python3 -m http.server 8080 --directory webpages > server.log 2>&1 &
 ```
 
+### Built-in tree
+
+```bash
+find . -print | sed -e 's;[^/]*/;|--;g;s;--|; |;g' | tee tree_output.txt
+```
+
 # CI/CD
 
 ### Tidy GitLab example with artifacts
