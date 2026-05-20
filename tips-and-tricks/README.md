@@ -53,6 +53,12 @@ nohup python3 -m http.server 8080 --directory webpages > server.log 2>&1 &
 find . -print | sed -e 's;[^/]*/;|--;g;s;--|; |;g' | tee tree_output.txt
 ```
 
+### VM optimization
+
+```bash
+echo -e "vm.swappiness=10\nvm.vfs_cache_pressure=200" | sudo tee /etc/sysctl.d/99-vm-optimize.conf
+```
+
 # CI/CD
 
 ### Tidy GitLab example with artifacts
