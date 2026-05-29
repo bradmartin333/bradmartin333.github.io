@@ -256,17 +256,22 @@ services:
           memory: 128M
         limits:
           memory: 512M
-  adminer:
-    image: adminer
-    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
     ports:
-      - 5050:8080
-    deploy:
-      resources:
-        reservations:
-          memory: 32M
-        limits:
-          memory: 128M
+      - 5050:3000
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - grafana_data:/var/lib/grafana
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+volumes:
+  grafana_data: null
 ```
 
 # [Return to Home](../index.html)
