@@ -258,37 +258,13 @@ services:
           memory: 512M
     labels:
       - com.centurylinklabs.watchtower.enable=true
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 5050:8080
-    deploy:
-      resources:
-        reservations:
-          memory: 32M
-        limits:
-          memory: 128M
-  grafana:
-    image: grafana/grafana-enterprise
-    container_name: grafana
-    ports:
-      - 5050:3000
-    restart: always
-    depends_on:
-      - db
-    volumes:
-      - grafana_data:/var/lib/grafana
-    deploy:
-      resources:
-        reservations:
-          memory: 256M
-        limits:
-          memory: 1G
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-volumes:
-  grafana_data: null
 ```
+
+# VSCode
+
+## Copilot `ENOENT: no such file or directory`
+
+1. `sudo rm -rf ~/.vscode-server/cli/servers/Stable-*`
+1. Reload VSCode and try again
 
 # [Return to Home](../index.html)
