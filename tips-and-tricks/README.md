@@ -279,6 +279,21 @@ services:
           memory: 32M
         limits:
           memory: 128M
+  adminer:
+    image: adminer
+    restart: always
+    links:
+      - db
+    ports:
+      - 5400:8080
+    deploy:
+      resources:
+        reservations:
+          memory: 32M
+        limits:
+          memory: 128M
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
 ```
 
 # VSCode
