@@ -53,10 +53,10 @@ nohup python3 -m http.server 8080 --directory webpages > server.log 2>&1 &
 find . -print | sed -e 's;[^/]*/;|--;g;s;--|; |;g' | tee tree_output.txt
 ```
 
-### VM optimization
+### Clear RAM Caches
 
 ```bash
-echo -e "vm.swappiness=10\nvm.vfs_cache_pressure=200" | sudo tee /etc/sysctl.d/99-vm-optimize.conf
+sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
 ```
 
 # CI/CD
@@ -204,6 +204,13 @@ extension SafeFilename on DateTime {
 
 # Docker
 
+## Cleanup
+
+```bash
+docker system prune
+docker system prune -a --volumes
+```
+
 ## [Dockge](https://dockge.kuma.pet/) compose
 
 ```yaml
@@ -258,6 +265,20 @@ services:
           memory: 512M
     labels:
       - com.centurylinklabs.watchtower.enable=true
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:${DB_PASSWORD}@db:5432/postgres?sslmode=disable"
+    links:
+      - db
+    deploy:
+      resources:
+        reservations:
+          memory: 32M
+        limits:
+          memory: 128M
 ```
 
 # VSCode
