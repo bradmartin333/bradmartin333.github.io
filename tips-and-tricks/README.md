@@ -296,6 +296,31 @@ services:
       - com.centurylinklabs.watchtower.enable=true
 ```
 
+## Remote Proxy
+
+This is useful if networked hardware is connected to a remote PC
+
+The Advanced Illumination DCS-100E controller has a webpage on port 80 and a SCPI interface on port 777
+
+1. Get the IP of the machine that the DCS controller is connected to
+1. SSH into the machine
+1. Ensure that docker is installed 
+1. Setup the controller webpage proxy: `sudo docker run -d --name dcs-controller-proxy -p 1234:1234 --restart unless-stopped alpine/socat tcp-listen:1234,fork,reuseaddr tcp-connect:192.168.0.1:80`
+1. Test the webpage by going to `{HOST_IP}:1234` on your remote machine in a web browser
+1. This may be enough for some users, but if you want CLI controls, continue these steps
+1. Setup the command port proxy: `sudo docker run -d --name dcs-controller-command-proxy -p 777:777 --restart unless-stopped alpine/socat tcp-listen:777,fork,reuseaddr tcp-connect:192.168.0.1:777`
+1. Test the command port proxy
+```bash
+brad@compy ~ % (echo "*IDN?;"; sleep 1) | nc 192.168.64.75 777
+Advanced illumination DCS-100E: Unnamed, BX2-200200WHIC1
+Firmware version 030084_09 (web
+brad@compy ~ % (echo "SET:MODE:CHANNEL1,1;"; sleep 1) | nc 192.168.64.75 777
+INFO: Channel 1 set to mode 1 (continuous)
+brad@compy ~ % (echo "SET:MODE:CHANNEL1,0;"; sleep 1) | nc 192.168.64.75 777
+INFO: Channel 1 set to mode 0 (off)
+```
+1. [My python package](https://pypi.org/project/pydcscontrol/) can now be used remotely by using the flag `--host {HOST_IP}`
+
 # VSCode
 
 ## Copilot `ENOENT: no such file or directory`
