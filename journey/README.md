@@ -17,12 +17,13 @@ graph TD;
     M --- N --- O[Annika, my wife, starts Grad school at Duke];
     O --2019 Durham, NC--- P[Work at tech startups in the Research Triangle Park];
     P --- Q[Establish myself as a Systems Engineer];
-    Q --2024 Bozeman, MT--- R[Move back to the mountains];
-    R --- S[Software Engineer at AED];
+    Q --2024 Bozeman, MT--- R[Work on the Las Vegas Sphere];
+    R --- S[Move back to NC?];
+    R --- T[Move to Malmö, SE?];
     classDef default fill:#cef0da,stroke:#4a9c6a
-    click S href "https://aed.pro/"
     classDef wow fill:#03adfc,stroke:#8d5c7b
     class S wow;
+    class T wow;
 ```
 
 # [Return to Home](../index.html)
