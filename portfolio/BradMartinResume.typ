@@ -31,7 +31,7 @@
 == Experience
 #exp(
   role: "Software Engineer",
-  date: "2024 - Present",
+  date: "2024 - 2026",
   organization: "Advanced Electronic Designs",
   location: "Bozeman, MT",
   details: [
