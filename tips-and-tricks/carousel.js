@@ -5,7 +5,21 @@
 
   const SOURCE = typeof CARDS !== 'undefined' && Array.isArray(CARDS) ? CARDS : [];
   const ALL = SOURCE.filter(c => c && document.getElementById('tpl-' + c.type));
-  ALL.forEach((c, i) => { if (!c.id) c.id = 'card-' + (i + 1); });
+  // every card needs a unique id for its share link. Hand-written ids win; generated ones
+  // ("card-3") skip any id already in use, and a repeated hand-written id gets a suffix.
+  const written = new Set(ALL.filter(c => c.id).map(c => c.id));
+  const seen = new Set();
+  ALL.forEach((c, i) => {
+    let id = c.id;
+    if (!id || seen.has(id)) {
+      if (id) console.warn('tips-and-tricks: duplicate card id "' + id + '"');
+      const base = id || 'card-' + (i + 1);
+      id = base;
+      for (let k = 2; seen.has(id) || (id !== c.id && written.has(id)); k++) id = base + '-' + k;
+    }
+    seen.add(id);
+    c.id = id;
+  });
 
   const $ = s => document.querySelector(s);
   const stage = $('#stage'), deck = $('#deck'), counter = $('#counter');
@@ -16,6 +30,12 @@
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   const mod = (a, m) => ((a % m) + m) % m;
   const ease = (dt, rate) => 1 - Math.exp(-dt * rate);
+
+  // the card id from the URL hash; a mangled link (e.g. a stray '%') must not break the page
+  const hashId = () => {
+    const raw = location.hash.slice(1);
+    try { return decodeURIComponent(raw); } catch (_) { return raw; }
+  };
 
   // move o[k] toward o[k + 'T']; returns true while still moving
   function approach(o, k, rate, dt) {
@@ -71,6 +91,7 @@
     el.append(tilt);
     el._card = card;
     el._tilt = tilt;
+    el._face = face;
     el._hover = 0;
     el._hoverT = 0;
     el._vis = true;
@@ -127,10 +148,12 @@
       el.classList.toggle('is-front', on);
       el.setAttribute('aria-label', (i + 1) + ' of ' + n + ': ' + el._card.title);
       el.querySelectorAll('a, button').forEach(x => { x.tabIndex = on ? 0 : -1; });
+      // a scrollable face is keyboard-focusable in recent browsers; keep side cards out of Tab
+      if (on) el._face.removeAttribute('tabindex'); else el._face.tabIndex = -1;
     });
     counter.textContent = (ai + 1) + ' / ' + n;
     const id = ALL[ai] && ALL[ai].id;
-    if (interacted && id && decodeURIComponent(location.hash.slice(1)) !== id) {
+    if (interacted && id && hashId() !== id) {
       try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (_) { /* file:// etc */ }
     }
   }
@@ -218,7 +241,10 @@
       tilt.x = tilt.y = 0;
     }
     tilt.el = fel;
-    if (fel && fx) {
+    if (fel && !fx) {
+      fel._tilt.style.transform = fel._tilt.style.transformOrigin = '';
+      tilt.x = tilt.y = 0;
+    } else if (fel) {
       busy = approach(tilt, 'x', 10, dt) || busy;
       busy = approach(tilt, 'y', 10, dt) || busy;
       const ts = fel._tilt.style;
@@ -361,10 +387,11 @@
       case 'End': goTo(n - 1); break;
       case 'ArrowDown':
       case 'ArrowUp': {
-        // scroll within the front card (only long cards actually move)
-        const face = els[active()] && els[active()].querySelector('.face');
-        if (!face) return;
-        face.scrollBy({ top: e.key === 'ArrowDown' ? 64 : -64, behavior: calm() ? 'auto' : 'smooth' });
+        // scroll within the front card; if it can't scroll that way, leave the key to the page
+        const el = els[active()], face = el && el._face, down = e.key === 'ArrowDown';
+        const room = face && (down ? face.scrollHeight - face.clientHeight - face.scrollTop : face.scrollTop);
+        if (!(room > 1)) return;
+        face.scrollBy({ top: down ? 64 : -64, behavior: calm() ? 'auto' : 'smooth' });
         break;
       }
       case 'c': if (els[active()]) copyCard(els[active()]); break;
@@ -406,8 +433,6 @@
   }
 
   // ---------- boot ----------
-
-  const hashId = () => decodeURIComponent(location.hash.slice(1));
 
   addEventListener('hashchange', () => {
     const i = ALL.findIndex(c => c.id === hashId());
