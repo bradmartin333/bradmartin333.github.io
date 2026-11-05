@@ -45,11 +45,6 @@ const CARDS = [
     code: code`magick -delay 20 *.png movie.gif`,
   },
   {
-    id: 'copilot-enoent', type: 'insight', title: 'Copilot: ENOENT', topic: 'vscode',
-    body: 'Copilot failing with `ENOENT: no such file or directory`? Clear the cached VS Code server, then reload VS Code and try again.',
-    code: code`sudo rm -rf ~/.vscode-server/cli/servers/Stable-*`,
-  },
-  {
     id: 'script-dir', type: 'snippet', title: 'cd to the script\'s folder', lang: 'bash',
     note: 'Only changes directory if you are not already there.',
     code: code`
@@ -96,14 +91,6 @@ const CARDS = [
     blurb: 'Collaborative whiteboard app.',
   },
   {
-    id: 'docker-prune', type: 'snippet', title: 'Docker cleanup', lang: 'docker',
-    note: 'The second line also removes unused images and volumes.',
-    code: code`
-      docker system prune
-      docker system prune -a --volumes
-    `,
-  },
-  {
     id: 'tree', type: 'snippet', title: 'tree, without tree', lang: 'bash',
     code: code`find . -print | sed -e 's;[^/]*/;|--;g;s;--|; |;g' | tee tree_output.txt`,
   },
@@ -116,11 +103,6 @@ const CARDS = [
     body: 'Silicone stranded wire. Digikey `3239-22-1-*`',
   },
   {
-    id: 'ps-regex', type: 'snippet', title: 'Swap regex groups', lang: 'powershell',
-    note: '`1920x1080` becomes `1920 px, 1080 px`. The order of parentheses, `<>` and `$` matters.',
-    code: code`(Get-Content .\regex25.txt) -replace '(?<a>([0-9]+))x(?<b>([0-9]+))','\${a} px, \${b} px'`,
-  },
-  {
     id: 'gif-compress', type: 'snippet', title: 'Compress a GIF', lang: 'imagemagick',
     code: code`magick mogrify -layers 'optimize' -fuzz 7% movie.gif`,
   },
@@ -131,9 +113,5 @@ const CARDS = [
   {
     id: 'ffmpeg-audio', type: 'snippet', title: 'Extract the audio', lang: 'ffmpeg',
     code: code`ffmpeg -i input_file.mp4 -q:a 0 -map a output_file.mp3`,
-  },
-  {
-    id: 'drop-caches', type: 'snippet', title: 'Clear RAM caches', lang: 'linux',
-    code: code`sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches`,
   },
 ];
