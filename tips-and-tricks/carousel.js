@@ -5,20 +5,12 @@
 
   const SOURCE = typeof CARDS !== 'undefined' && Array.isArray(CARDS) ? CARDS : [];
   const ALL = SOURCE.filter(c => c && document.getElementById('tpl-' + c.type));
-  // every card needs a unique id for its share link. Hand-written ids win; generated ones
-  // ("card-3") skip any id already in use, and a repeated hand-written id gets a suffix.
-  const written = new Set(ALL.filter(c => c.id).map(c => c.id));
-  const seen = new Set();
+  // each card's id is its share link (#id), so it must be hand-written and unique: warn, don't guess
+  const ids = new Set();
   ALL.forEach((c, i) => {
-    let id = c.id;
-    if (!id || seen.has(id)) {
-      if (id) console.warn('tips-and-tricks: duplicate card id "' + id + '"');
-      const base = id || 'card-' + (i + 1);
-      id = base;
-      for (let k = 2; seen.has(id) || (id !== c.id && written.has(id)); k++) id = base + '-' + k;
-    }
-    seen.add(id);
-    c.id = id;
+    if (!c.id) console.warn('tips-and-tricks: card ' + (i + 1) + ' ("' + c.title + '") has no id');
+    else if (ids.has(c.id)) console.warn('tips-and-tricks: duplicate card id "' + c.id + '"');
+    ids.add(c.id);
   });
 
   const $ = s => document.querySelector(s);
@@ -260,14 +252,15 @@
   // ---------- drag / swipe / tap ----------
 
   const drag = { id: null, active: false, x0: 0, y0: 0, pos0: 0, samples: [] };
-  let suppressClick = false, downOnCode = false;
+  let suppressClick = false;
 
   stage.addEventListener('pointerdown', e => {
     if (!n || drag.id !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
     Object.assign(drag, { id: e.pointerId, active: false, x0: e.clientX, y0: e.clientY, pos0: pos, samples: [] });
     suppressClick = false;
-    // remembered here because the hover tilt can move the card between press and release
-    downOnCode = !!e.target.closest('[data-copy]');
+    // freeze the hover tilt while pressed, so press and release always land on the same element
+    tilt.xT = tilt.x;
+    tilt.yT = tilt.y;
   });
 
   addEventListener('pointermove', e => {
@@ -322,9 +315,10 @@
 
   stage.addEventListener('dragstart', e => e.preventDefault());
 
-  // taps and clicks: side card -> bring forward, code -> copy
+  // taps and clicks: side card -> bring forward, code -> copy.
+  // Keyboard-activated clicks (detail 0, e.g. Enter on a link) skip the pointer bookkeeping.
   stage.addEventListener('click', e => {
-    if (suppressClick) {
+    if (suppressClick && e.detail !== 0) {
       e.preventDefault();
       e.stopPropagation();
       suppressClick = false;
@@ -338,7 +332,7 @@
       goTo(i);
       return;
     }
-    if ((downOnCode || e.target.closest('[data-copy]')) && !String(getSelection())) copyCard(card);
+    if (e.target.closest('[data-copy]') && !String(getSelection())) copyCard(card);
   }, true);
 
   // ---------- mouse hover: tilt, magnet, parallax ----------
@@ -352,10 +346,8 @@
     const card = drag.active ? null : e.target.closest('.card');
     const ai = active();
     els.forEach((el, i) => { el._hoverT = el === card && i !== ai ? 1 : 0; });
-    if (card && card === els[ai] && e.target.closest('a, button')) {
-      // hold the tilt still over links/buttons so they don't slide out from under the pointer
-      tilt.xT = tilt.x;
-      tilt.yT = tilt.y;
+    if (drag.id !== null && !drag.active) {
+      // pressed but not dragging: keep the tilt frozen (see pointerdown)
     } else if (card && card === els[ai]) {
       const cr = card.getBoundingClientRect();
       tilt.xT = clamp(((e.clientX - cr.left) / cr.width - 0.5) * 2, -1, 1);
@@ -412,11 +404,14 @@
       ta.value = text;
       ta.setAttribute('readonly', '');
       ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      const prev = document.activeElement;
       document.body.append(ta);
+      ta.focus({ preventScroll: true }); // without focus, some browsers copy nothing yet report success
       ta.select();
       let ok = false;
       try { ok = document.execCommand('copy'); } catch (__) { ok = false; }
       ta.remove();
+      if (prev && prev.focus) prev.focus({ preventScroll: true });
       return ok;
     }
   }
