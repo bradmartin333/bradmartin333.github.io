@@ -7,6 +7,7 @@
   --snippet: #4caf50;
   --site: #2196f3;
   --insight: #ff9800;
+  --shop: #e91e63;
   --W: min(340px, calc(100vw - 80px));
   --H: min(440px, 70vh);
   --sans: "Arimo", Arial, "Helvetica Neue", Helvetica, sans-serif;
@@ -37,6 +38,7 @@ body {
 [data-type="snippet"] { --a: var(--snippet); }
 [data-type="site"] { --a: var(--site); }
 [data-type="insight"] { --a: var(--insight); }
+[data-type="shop"] { --a: var(--shop); }
 
 /* ---------- header ---------- */
 
@@ -217,6 +219,35 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
 }
 
 .is-front .code:hover, .code.copied { border-color: var(--a); }
+
+/* shop cards: a list of linked items */
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.items li { border-bottom: 1px solid var(--line); }
+.items li:last-child { border-bottom: 0; }
+
+.items .row {
+  display: block;
+  padding: 4px 0;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.items .name { font-size: 0.9rem; }
+.items a .name::after { content: " \2197"; color: var(--a); }
+.items a:hover .name { color: var(--a); }
+
+.items .detail {
+  display: block;
+  font-weight: 400;
+  font-size: 0.76rem;
+  color: var(--mute);
+}
 
 /* small "copied" note that fades in on the code block */
 .code::after {

@@ -18,6 +18,10 @@
     code: code`optional snippet`,
     url: 'https://optional.link/', linkText: 'optional label' },
 
+  { id: 'short-id', type: 'shop', title: 'A list of things', topic: 'optional tag',
+    body: 'optional intro',
+    items: [{ name: 'Thing', url: 'https://example.com/thing', detail: 'optional one-liner' }] },
+
   Inside code`...`
     - backslashes are literal and the common indentation is trimmed
     - only two things need escaping: a backtick -> \`  and  ${ -> \${
@@ -150,6 +154,18 @@ const CARDS = [
   {
     id: 'best-wire', type: 'insight', title: 'The best wire', topic: 'bom',
     body: 'Silicone stranded wire. Digikey `3239-22-1-*`',
+  },
+  {
+    id: 'gear', type: 'shop', title: 'Gear I like', topic: 'amazon',
+    items: [
+      { name: 'Perixx PERIBOARD-106M', url: 'https://www.amazon.com/dp/B08F3WBFP1', detail: 'Wired, full-size, retro gray and white' },
+      { name: 'Arducam day & night camera', url: 'https://www.amazon.com/dp/B0829HZ3Q7', detail: '1080p USB webcam board, IR LEDs, auto IR-cut' },
+      { name: 'Kester 44 solder', url: 'https://www.amazon.com/dp/B00AVLM4SO', detail: '63/37, 0.031", RMA rosin core' },
+      { name: 'Xuron 410 flush cutters', url: 'https://www.amazon.com/dp/B000IBOOWQ', detail: 'Micro-shear wire cutters' },
+      { name: 'Gimars gel wrist rests', url: 'https://www.amazon.com/dp/B01MYZMODY', detail: 'Keyboard rest and mouse pad set' },
+      { name: 'Uncle Bill\'s Sliver Gripper', url: 'https://www.amazon.com/dp/B07DTJX6TK', detail: 'Precision keychain tweezers, 3 pack' },
+      { name: '8BitDo media remote for Xbox', url: 'https://www.amazon.com/dp/B0BXSV78R6', detail: 'Short edition, infrared' },
+    ],
   },
   {
     id: 'gif-compress', type: 'snippet', title: 'Compress a GIF', lang: 'imagemagick',

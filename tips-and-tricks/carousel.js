@@ -42,6 +42,18 @@
   const esc = s => String(s).replace(/[&<>"']/g, ch =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
   const rich = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+  const safeUrl = u => (/^https?:\/\//i.test(u) ? u : '#');
+
+  // a list entry is plain text, or { name, url, detail } for an item row (shop cards);
+  // with a url the whole row is the link, so it's an easy target
+  const listItem = x => {
+    if (typeof x === 'string') return '<li>' + rich(x) + '</li>';
+    const inner = '<span class="name">' + esc(x.name) + '</span>' +
+      (x.detail ? '<span class="detail">' + rich(x.detail) + '</span>' : '');
+    return '<li>' + (x.url
+      ? '<a class="row" href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="noopener">' + inner + '</a>'
+      : '<span class="row">' + inner + '</span>') + '</li>';
+  };
 
   function derive(card) {
     const d = Object.assign({}, card);
@@ -56,7 +68,7 @@
     root.querySelectorAll('[data-slot]').forEach(el => {
       const v = card[el.dataset.slot];
       if (v == null || v === '' || (Array.isArray(v) && !v.length)) { el.remove(); return; }
-      if (Array.isArray(v)) el.innerHTML = v.map(x => '<li>' + rich(x) + '</li>').join('');
+      if (Array.isArray(v)) el.innerHTML = v.map(listItem).join('');
       else if (el.hasAttribute('data-rich')) el.innerHTML = rich(v);
       else el.textContent = v;
     });

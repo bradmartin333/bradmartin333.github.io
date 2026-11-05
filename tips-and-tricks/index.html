@@ -36,6 +36,7 @@
           data-slot="field"  -> text from card.field (element is removed if the field is empty)
           data-href="field"  -> href from card.field (element is removed if the field is empty)
           data-rich          -> `backticks` in the text become inline code
+          a list field       -> one <li> per entry: a string, or { name, url, detail } for a link
           data-copy          -> the card's code can be copied (click it or press c)
         Derived fields: host, linkText (from url).
     -->
@@ -62,6 +63,13 @@
         <div class="actions">
             <a class="btn" data-href="url" data-slot="linkText" target="_blank" rel="noopener"></a>
         </div>
+    </template>
+
+    <template id="tpl-shop">
+        <div class="meta"><span class="kind">shop</span><span data-slot="topic"></span></div>
+        <h2 data-slot="title"></h2>
+        <p class="body" data-slot="body" data-rich></p>
+        <ul class="items" data-slot="items"></ul>
     </template>
 
     <script src="./cards.js"></script>
