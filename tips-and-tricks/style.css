@@ -9,6 +9,8 @@
   --insight: #ff9800;
   --W: min(340px, calc(100vw - 80px));
   --H: min(440px, 70vh);
+  --sans: "Arimo", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --radius: 14px;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   color-scheme: dark;
 }
@@ -23,7 +25,7 @@ html, body {
 }
 
 body {
-  font: 700 16px/1.4 var(--mono);
+  font: 700 16px/1.4 var(--sans);
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
@@ -108,6 +110,7 @@ body.fx-cursor .stage, body.fx-cursor .stage * { cursor: none !important; }
   height: 100%;
   background: var(--card);
   border: 2px solid var(--a);
+  border-radius: var(--radius);
 }
 
 /* fades cards that are further back (everything on them, buttons included) */
@@ -115,6 +118,7 @@ body.fx-cursor .stage, body.fx-cursor .stage * { cursor: none !important; }
   content: "";
   position: absolute;
   inset: -2px;
+  border-radius: var(--radius);
   z-index: 3;
   background: var(--bg);
   opacity: var(--dim, 0);
@@ -126,6 +130,7 @@ body.fx-cursor .stage, body.fx-cursor .stage * { cursor: none !important; }
 .face {
   position: absolute;
   inset: 0;
+  border-radius: calc(var(--radius) - 2px);
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -207,7 +212,7 @@ body.fx-cursor .stage, body.fx-cursor .stage * { cursor: none !important; }
   padding: 0 6px;
   background: var(--bg);
   color: var(--a);
-  font: 700 0.7rem/1.6 var(--mono);
+  font: 700 0.7rem/1.6 var(--sans);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
