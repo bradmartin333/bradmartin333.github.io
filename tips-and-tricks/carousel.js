@@ -8,10 +8,9 @@
   ALL.forEach((c, i) => { if (!c.id) c.id = 'card-' + (i + 1); });
 
   const $ = s => document.querySelector(s);
-  const stage = $('#stage'), deck = $('#deck'), ring = $('#cursor');
+  const stage = $('#stage'), deck = $('#deck'), counter = $('#counter');
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const calm = () => reduce.matches;
 
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -88,7 +87,6 @@
   // ox/oy: the pointer's spot on the card; the tilt pivots there so whatever is under the pointer stays put
   const tilt = { el: null, x: 0, xT: 0, y: 0, yT: 0, ox: 0, oy: 0 };
   const par = { x: 0, xT: 0, y: 0, yT: 0 };
-  const cur = { x: 0, xT: 0, y: 0, yT: 0, inside: false };
 
   const wrap = d => (n ? d - n * Math.round(d / n) : 0); // shortest signed distance on the ring
   const active = () => (n ? mod(Math.round(target), n) : -1);
@@ -132,6 +130,7 @@
       el.setAttribute('aria-label', (i + 1) + ' of ' + n + ': ' + el._card.title);
       el.querySelectorAll('a, button').forEach(x => { x.tabIndex = on ? 0 : -1; });
     });
+    counter.textContent = (ai + 1) + ' / ' + n;
     const id = ALL[ai] && ALL[ai].id;
     if (interacted && id && decodeURIComponent(location.hash.slice(1)) !== id) {
       try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (_) { /* file:// etc */ }
@@ -168,7 +167,7 @@
         else busy = true;
       }
       // keep the numbers small once settled
-      if (pos === target && wheel.origin === null && n && mod(target, n) !== target) pos = target = mod(target, n);
+      if (pos === target && n && mod(target, n) !== target) pos = target = mod(target, n);
     }
 
     if (fx) {
@@ -230,15 +229,6 @@
     }
 
 
-    // cursor ring trails the pointer slightly
-    if (cur.inside) {
-      if (fx) {
-        busy = approach(cur, 'x', 30, dt) || busy;
-        busy = approach(cur, 'y', 30, dt) || busy;
-      } else { cur.x = cur.xT; cur.y = cur.yT; }
-      ring.style.transform = 'translate(' + cur.x.toFixed(1) + 'px,' + cur.y.toFixed(1) + 'px)';
-    }
-
     if (n && ai !== lastActive) onActive(ai);
 
     raf = busy ? requestAnimationFrame(frame) : 0;
@@ -270,7 +260,6 @@
       vel = 0;
       try { stage.setPointerCapture(e.pointerId); } catch (_) { /* pointer already gone */ }
       document.body.classList.add('dragging');
-      setCursorMode(null, null);
     }
     let d = -(e.clientX - drag.x0) / pxPerCard();
     const ad = Math.abs(d);
@@ -329,27 +318,10 @@
     if ((downOnCode || e.target.closest('[data-copy]')) && !String(getSelection())) copyCard(card);
   }, true);
 
-  // ---------- mouse hover: tilt, magnet, parallax, cursor ----------
-
-  // the ring grows a little over anything clickable
-  function setCursorMode(target, card) {
-    let big = false;
-    if (!drag.active && card) {
-      big = els.indexOf(card) !== active() || !!target.closest('a, button, [data-copy]');
-    }
-    ring.classList.toggle('big', big);
-  }
+  // ---------- mouse hover: tilt, magnet, parallax ----------
 
   stage.addEventListener('pointermove', e => {
     if (e.pointerType !== 'mouse') return;
-    cur.xT = e.clientX;
-    cur.yT = e.clientY;
-    if (!cur.inside && fine.matches) {
-      cur.inside = true;
-      cur.x = cur.xT;
-      cur.y = cur.yT;
-      ring.classList.add('show');
-    }
     const r = stage.getBoundingClientRect();
     par.xT = clamp(((e.clientX - r.left) / r.width - 0.5) * 2, -1, 1);
     par.yT = clamp(((e.clientY - r.top) / r.height - 0.5) * 2, -1, 1);
@@ -370,51 +342,16 @@
     } else {
       tilt.xT = tilt.yT = 0;
     }
-    setCursorMode(e.target, card);
     kick();
   });
 
   stage.addEventListener('pointerleave', e => {
     if (e.pointerType !== 'mouse' || drag.active) return;
-    cur.inside = false;
-    ring.classList.remove('show');
     par.xT = par.yT = 0;
     tilt.xT = tilt.yT = 0;
     els.forEach(el => { el._hoverT = 0; });
     kick();
   });
-
-  // ---------- wheel / trackpad: scrub, then snap in the direction travelled ----------
-
-  const wheel = { origin: null, timer: 0 };
-
-  function canScroll(el, dy) {
-    if (!el || el.scrollHeight <= el.clientHeight + 1 || getComputedStyle(el).overflowY === 'hidden') return false;
-    return dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0;
-  }
-
-  stage.addEventListener('wheel', e => {
-    if (!n || e.ctrlKey) return;
-    const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1;
-    const dx = e.deltaX * unit, dy = e.deltaY * unit;
-    const horiz = Math.abs(dx) > Math.abs(dy);
-    if (!horiz) {
-      const card = e.target.closest('.card');
-      if (card && card === els[active()] && canScroll(card._face, dy)) return; // let the card scroll
-    }
-    e.preventDefault();
-    interacted = true;
-    if (wheel.origin === null) wheel.origin = Math.round(target);
-    target = clamp(target + (horiz ? dx : dy) / 320, wheel.origin - 8, wheel.origin + 8);
-    clearTimeout(wheel.timer);
-    wheel.timer = setTimeout(() => {
-      const diff = target - wheel.origin;
-      target = Math.abs(diff) < 0.12 ? wheel.origin : wheel.origin + Math.sign(diff) * Math.max(1, Math.round(Math.abs(diff)));
-      wheel.origin = null;
-      kick();
-    }, 140);
-    kick();
-  }, { passive: false });
 
   // ---------- keyboard ----------
 
@@ -472,9 +409,6 @@
     if (i >= 0) goTo(i);
   });
 
-  const syncCursor = () => document.body.classList.toggle('fx-cursor', fine.matches);
-  syncCursor();
-  if (fine.addEventListener) fine.addEventListener('change', syncCursor);
   if (reduce.addEventListener) reduce.addEventListener('change', kick);
 
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => { measure(); kick(); }).observe(stage);

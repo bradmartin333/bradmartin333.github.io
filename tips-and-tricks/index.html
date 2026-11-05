@@ -5,6 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tips and Tricks</title>
+    <meta name="description" content="Code snippets, handy sites and small lessons I keep coming back to.">
+    <meta name="theme-color" content="#0d1117">
+    <link rel="canonical" href="https://bradmartin333.github.io/tips-and-tricks/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Brad Martin">
+    <meta property="og:title" content="Tips and Tricks">
+    <meta property="og:description" content="Code snippets, handy sites and small lessons I keep coming back to.">
+    <meta property="og:url" content="https://bradmartin333.github.io/tips-and-tricks/">
+    <meta property="og:image" content="https://bradmartin333.github.io/images/logoTransparent.png">
+    <meta name="twitter:card" content="summary">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap">
@@ -17,10 +27,9 @@
     </header>
 
     <main class="stage" id="stage" aria-roledescription="carousel" aria-label="Tips and tricks">
+        <p class="counter" id="counter" aria-live="polite"></p>
         <div class="deck" id="deck"></div>
     </main>
-
-    <div class="cursor" id="cursor" aria-hidden="true"></div>
 
     <!--
         Card templates. carousel.js clones one per card and fills it:
