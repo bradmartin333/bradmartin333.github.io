@@ -51,8 +51,7 @@
     root.querySelectorAll('[data-href]').forEach(el => {
       const v = card[el.dataset.href];
       if (v) el.href = v;
-      else if (el.closest('.actions')) el.remove();
-      else el.replaceWith(...el.childNodes);
+      else el.remove();
     });
     root.querySelectorAll('.actions').forEach(a => { if (!a.children.length) a.remove(); });
   }
@@ -72,7 +71,6 @@
     el.append(tilt);
     el._card = card;
     el._tilt = tilt;
-    el._face = face;
     el._hover = 0;
     el._hoverT = 0;
     el._vis = true;
@@ -228,7 +226,6 @@
       ts.transform = 'rotateX(' + (-tilt.y * 10).toFixed(2) + 'deg) rotateY(' + (tilt.x * 12).toFixed(2) + 'deg)';
     }
 
-
     if (n && ai !== lastActive) onActive(ai);
 
     raf = busy ? requestAnimationFrame(frame) : 0;
@@ -236,12 +233,12 @@
 
   // ---------- drag / swipe / tap ----------
 
-  const drag = { id: null, type: '', active: false, x0: 0, y0: 0, pos0: 0, samples: [] };
+  const drag = { id: null, active: false, x0: 0, y0: 0, pos0: 0, samples: [] };
   let suppressClick = false, downOnCode = false;
 
   stage.addEventListener('pointerdown', e => {
     if (!n || drag.id !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    Object.assign(drag, { id: e.pointerId, type: e.pointerType, active: false, x0: e.clientX, y0: e.clientY, pos0: pos, samples: [] });
+    Object.assign(drag, { id: e.pointerId, active: false, x0: e.clientX, y0: e.clientY, pos0: pos, samples: [] });
     suppressClick = false;
     // remembered here because the hover tilt can move the card between press and release
     downOnCode = !!e.target.closest('[data-copy]');
@@ -362,6 +359,14 @@
       case 'ArrowLeft': step(-1); break;
       case 'Home': goTo(0); break;
       case 'End': goTo(n - 1); break;
+      case 'ArrowDown':
+      case 'ArrowUp': {
+        // scroll within the front card (only long cards actually move)
+        const face = els[active()] && els[active()].querySelector('.face');
+        if (!face) return;
+        face.scrollBy({ top: e.key === 'ArrowDown' ? 64 : -64, behavior: calm() ? 'auto' : 'smooth' });
+        break;
+      }
       case 'c': if (els[active()]) copyCard(els[active()]); break;
       default: return;
     }
