@@ -180,4 +180,22 @@ const CARDS = [
     id: 'etymonline', type: 'site', title: 'Etymonline', url: 'https://www.etymonline.com/',
     blurb: 'Online etymology dictionary.',
   },
+  {
+    id: 'nato-alphabet', type: 'insight', title: 'NATO phonetic alphabet', topic: 'reference',
+    code: code`
+      A  Alfa      N  November
+      B  Bravo     O  Oscar
+      C  Charlie   P  Papa
+      D  Delta     Q  Quebec
+      E  Echo      R  Romeo
+      F  Foxtrot   S  Sierra
+      G  Golf      T  Tango
+      H  Hotel     U  Uniform
+      I  India     V  Victor
+      J  Juliett   W  Whiskey
+      K  Kilo      X  X-ray
+      L  Lima      Y  Yankee
+      M  Mike      Z  Zulu
+    `,
+  },
 ];
