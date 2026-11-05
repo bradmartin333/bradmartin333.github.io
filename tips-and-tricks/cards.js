@@ -59,6 +59,14 @@ const CARDS = [
     blurb: 'Like Overleaf, but with optimizations and built with Rust. My CV is written in it.',
   },
   {
+    id: 'git-settings', type: 'insight', title: 'Two git settings worth turning on', topic: 'git',
+    body: '`push.autoSetupRemote` makes the first push of a new branch just work, no `--set-upstream`. `fetch.prune` drops remote-tracking branches that were deleted upstream on every fetch.',
+    code: code`
+      git config --global push.autoSetupRemote true
+      git config --global fetch.prune true
+    `,
+  },
+  {
     id: 'ffmpeg-trim', type: 'snippet', title: 'Trim a video', lang: 'ffmpeg',
     note: 'Stream copy, so no re-encode.',
     code: code`ffmpeg -ss 00:07 -to 00:59 -i <input> -c:v copy -c:a copy <output>`,
@@ -66,6 +74,11 @@ const CARDS = [
   {
     id: 'quiet-server', type: 'snippet', title: 'Quietly serve a folder', lang: 'bash',
     code: code`nohup python3 -m http.server 8080 --directory webpages > server.log 2>&1 &`,
+  },
+  {
+    id: 'git-gone', type: 'snippet', title: 'Clean up merged branches', lang: 'git',
+    note: 'Deletes local branches whose remote is gone, e.g. after a PR merges. Uses `-d`, so anything unmerged is kept. Saved as `git gone` in my gitconfig.',
+    code: code`git checkout main && git pull --prune && git branch -vv | awk '/: gone]/{print $1}' | xargs -r git branch -d`,
   },
   {
     id: 'iwanthue', type: 'site', title: 'iwanthue', url: 'https://medialab.github.io/iwanthue/',
@@ -99,6 +112,42 @@ const CARDS = [
     blurb: 'Convert images to byte arrays for microcontrollers and LED matrices.',
   },
   {
+    id: 'wiz', type: 'insight', title: 'Control WiZ bulbs from the terminal', topic: 'smart home',
+    body: 'WiZ bulbs listen for JSON on UDP port 38899, so a broadcast on the local network is enough. No app or account needed. Usage: `wiz on 60 2700` (brightness, colour temperature) or `wiz off`.',
+    code: code`
+      wiz() {
+        local payload
+        case "$1" in
+          on)
+            local dimming="\${2:-50}"
+            local temp="\${3:-3000}"
+            if (( dimming < 10 || dimming > 100 )); then
+              echo "Brightness must be 10-100"; return 1
+            fi
+            if (( temp < 2200 || temp > 6500 )); then
+              echo "Temp must be 2200-6500K"; return 1
+            fi
+            payload="{\"method\":\"setPilot\",\"params\":{\"state\":true,\"temp\":$temp,\"dimming\":$dimming}}"
+            ;;
+          off)
+            payload='{"method":"setPilot","params":{"state":false}}'
+            ;;
+          *)
+            echo "Usage: wiz on [brightness 10-100] [temp 2200-6500] | wiz off"
+            return 1
+            ;;
+        esac
+        python3 -c "
+      import socket
+      s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+      s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+      s.sendto('$payload'.encode(), ('255.255.255.255', 38899))
+      s.close()
+      "
+      }
+    `,
+  },
+  {
     id: 'best-wire', type: 'insight', title: 'The best wire', topic: 'bom',
     body: 'Silicone stranded wire. Digikey `3239-22-1-*`',
   },
@@ -113,5 +162,22 @@ const CARDS = [
   {
     id: 'ffmpeg-audio', type: 'snippet', title: 'Extract the audio', lang: 'ffmpeg',
     code: code`ffmpeg -i input_file.mp4 -q:a 0 -map a output_file.mp3`,
+  },
+  {
+    id: 'ssh-prompt', type: 'snippet', title: 'A prompt that knows where it is', lang: 'zsh',
+    note: 'Shows the git branch, and the path turns cyan over SSH so you always know which machine you are typing into.',
+    code: code`
+      parse_git_branch() {
+        git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/(\1)/p'
+      }
+      setopt PROMPT_SUBST
+      # magenta path locally, cyan over ssh
+      if [[ -n $SSH_CONNECTION ]]; then PROMPT_COLOR=cyan; else PROMPT_COLOR=magenta; fi
+      export PROMPT='%F{$PROMPT_COLOR}%~%f %F{green}$(parse_git_branch)%f $ '
+    `,
+  },
+  {
+    id: 'etymonline', type: 'site', title: 'Etymonline', url: 'https://www.etymonline.com/',
+    blurb: 'Online etymology dictionary.',
   },
 ];
