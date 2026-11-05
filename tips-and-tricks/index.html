@@ -1,21 +1,60 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tips and Tricks</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
-    <style>
-        body {
-            background-color: #0d1117;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <zero-md src="./README.md"></zero-md>
-<script data-goatcounter="https://bradmartin333.goatcounter.com/count"
+    <header class="top">
+        <a class="home" href="../index.html"><span>&larr;</span> home</a>
+    </header>
+
+    <main class="stage" id="stage" aria-roledescription="carousel" aria-label="Tips and tricks">
+        <div class="deck" id="deck"></div>
+    </main>
+
+    <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+    <!--
+        Card templates. carousel.js clones one per card and fills it:
+          data-slot="field"  -> text from card.field (element is removed if the field is empty)
+          data-href="field"  -> href from card.field
+          data-rich          -> `backticks` in the text become inline code
+          data-copy          -> the card's code can be copied (click it or press c)
+        Derived fields: host, linkText (from url).
+    -->
+    <template id="tpl-snippet">
+        <div class="meta"><span class="kind">snippet</span><span data-slot="lang"></span></div>
+        <h2 data-slot="title"></h2>
+        <pre class="code" data-slot="code" data-copy></pre>
+        <p class="note" data-slot="note" data-rich></p>
+    </template>
+
+    <template id="tpl-site">
+        <div class="meta"><span class="kind">site</span><span data-slot="host"></span></div>
+        <h2 data-slot="title"></h2>
+        <p class="blurb" data-slot="blurb" data-rich></p>
+        <div class="actions"><a class="btn" data-href="url" target="_blank" rel="noopener">visit &#8599;</a></div>
+    </template>
+
+    <template id="tpl-insight">
+        <div class="meta"><span class="kind">insight</span><span data-slot="topic"></span></div>
+        <h2 data-slot="title"></h2>
+        <p class="body" data-slot="body" data-rich></p>
+        <ol class="steps" data-slot="steps"></ol>
+        <pre class="code" data-slot="code" data-copy></pre>
+        <div class="actions">
+            <a class="btn" data-href="url" data-slot="linkText" target="_blank" rel="noopener"></a>
+        </div>
+    </template>
+
+    <script src="./cards.js"></script>
+    <script src="./carousel.js"></script>
+    <script data-goatcounter="https://bradmartin333.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
 
